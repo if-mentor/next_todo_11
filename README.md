@@ -54,7 +54,7 @@ Todo リストの作成を通じて、React.js、Next.js の基礎、Git,github 
 
 3. リポジトリのディレクトリへ移動
 
-4. `npm` or `npm install`
+4. `npm or npm install`
     - package.jsonにある各パッケージの install
     
 5. `npm run dev`
