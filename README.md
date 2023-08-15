@@ -70,8 +70,8 @@ Todo リストの作成を通じて、React.js、Next.js の基礎、Git,github 
 ### 2. `git pull origin main`を行なった後の作業
 
 remote に変更があった場合は、`git pull origin main`のコマンドを実行し、remote の変更を取り込む
-package に更新がないか、確認するため、`yarn`コマンドを実行する
-`success Already up-to-date.`と表示されれば OK。
+package に更新がないか、確認するため、`npm install`コマンドを実行する
+`found 0 vulnerabilities`と表示されれば OK。
 
 ### 3. プルリクのレビュー後のマージについて
 
