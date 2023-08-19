@@ -1,11 +1,5 @@
 "use client";
-/*
-use client がないと以下のエラーが出る（shogoさんに見てもらった時たぶんこれが抜けてた）
----------
-./node_modules/@chakra-ui/react/dist/index.mjs
-Error: It's currently unsupported to use "export *" in a client boundary. Please use named exports instead.
----------
-*/
+
 import Head from "next/head";
 import Link from "next/link";
 import { Heading, Box, Button, Text } from "@chakra-ui/react";
