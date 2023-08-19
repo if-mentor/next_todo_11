@@ -14,7 +14,7 @@ const NotFound = () => {
       </Head>
 
       <Heading
-        bg="#68D391"
+        bg={"green.300"}
         h="50px"
         pl="50px"
         display="flex"
@@ -32,8 +32,8 @@ const NotFound = () => {
         </Text>
         <Link href={"/"}>
           <Button
-            background={"#68D391"}
-            borderColor={"#68D391"}
+            background={"green.300"}
+            borderColor={"green.300"}
             color={"white"}
             variant="solid"
           >
