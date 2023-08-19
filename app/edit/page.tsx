@@ -93,7 +93,6 @@ export default function Edit() {
       </Flex>
       {/* UPDATEボタン */}
 
-
     </Box>
     {/* 中身 */}
     
