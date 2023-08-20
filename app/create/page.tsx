@@ -5,12 +5,9 @@ import { useState } from "react";
 
 
 export default function Create() {
-
    const [value, setValue] = useState('high')
-
   return(
-
-  <div>
+    <div>
     {/* ヘッダー */}   
       <Box background={"green.300"} p={3} px={50}>
         <Heading as='h2' size='2xl'>
@@ -91,12 +88,8 @@ export default function Create() {
         </Button>
       </Flex>
       {/* CREATEボタン */}
-
     </Box>
     {/* 中身 */}
-
   </div>
-  
-  
   )
 }
