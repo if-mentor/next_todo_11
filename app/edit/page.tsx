@@ -2,10 +2,8 @@
 
 import { Heading, Box, Button, Text, Input, Flex, Textarea } from "@chakra-ui/react";
 
-
 export default function Edit() {
   return(
-
     <div>
     {/* ヘッダー */}   
       <Box background={"green.300"} p={3} px={50}>
@@ -59,7 +57,6 @@ export default function Edit() {
 
       {/* 時間 */}
         <Flex>
-
         {/* Createの時間 */} 
           <Box pr={5}>
             <Text fontSize="md" fontWeight="bold" mt='15px'>
@@ -81,24 +78,19 @@ export default function Edit() {
             </Text>
           </Box>  
         {/* Updateの時間 */}
-
-      </Flex>
+        </Flex>
       {/* 時間 */}
 
-      {/* UPDATEボタン */}
+    {/* UPDATEボタン */}
       <Flex justify="end">
         <Button px={5} background={"green.500"} border='1px' borderColor='green.900' rounded="full" fontSize={18} color="white">
           UPDATE
         </Button>
       </Flex>
-      {/* UPDATEボタン */}
-
+    {/* UPDATEボタン */}
 
     </Box>
     {/* 中身 */}
-    
   </div>
-  
-  
   )
 }
