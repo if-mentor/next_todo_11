@@ -96,7 +96,5 @@ export default function Edit() {
     {/* 中身 */}
   </div>
   
-
-  
   )
 }
