@@ -1,18 +1,21 @@
 "use client";
 
 import {
+  AddIcon,
+  DeleteIcon,
+  EditIcon,
+  SearchIcon,
+} from "@chakra-ui/icons";
+import {
   Heading,
-  Flex,
   FormControl,
   FormLabel,
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
   Box,
   HStack,
@@ -22,8 +25,6 @@ import {
   InputRightElement,
   InputGroup,
   IconButton,
-  Icon,
-  VStack,
   Spacer,
 } from "@chakra-ui/react";
 
@@ -47,7 +48,7 @@ const Top = () => {
               <FormLabel>SEARCH</FormLabel>
               <InputGroup size="sm">
                 <InputRightElement>
-                  <IconButton size="sm" />
+                  <IconButton icon={<SearchIcon />} size="sm" />
                 </InputRightElement>
                 <Input placeholder="タスクを検索" />
               </InputGroup>
@@ -75,9 +76,9 @@ const Top = () => {
           </HStack>
           <Spacer />
           <Box>
-            <Button colorScheme="teal" rounded="full" mr={2}>
+            <IconButton icon={<AddIcon />} colorScheme="teal" rounded="full" mr={2}>
               Task作成
-            </Button>
+            </IconButton>
           </Box>
         </HStack>
         <TableContainer>
@@ -95,27 +96,39 @@ const Top = () => {
             <Tbody>
               {/* TODO: Taskデータをここにマップして表示 */}
               <Tr>
-                <Td width="40%" p={1}>Next.jsでTodoサイトを作成</Td>
+                <Td width="40%" p={1}>
+                  Next.jsでTodoサイトを作成
+                </Td>
                 <Td width="12%" p={1}>
-                  <Box p={2} bgColor="green.100" rounded="full" textAlign="center">
+                  <Button
+                    p={2}
+                    bgColor="green.100"
+                    rounded="full"
+                    textAlign="center"
+                  >
                     DOING
-                  </Box>
+                  </Button>
                 </Td>
                 <Td width="12%" p={1}>
                   <Select size="sm">
-                  <option>高</option>
-                  <option>中</option>
-                  <option>低</option>
+                    <option>高</option>
+                    <option>中</option>
+                    <option>低</option>
                   </Select>
                 </Td>
-                <Td width="12%" p={1}>yyyy-mm-dd</Td>
-                <Td width="12%" p={1}>yyyy-mm-dd</Td>
                 <Td width="12%" p={1}>
-                  <IconButton size="xs" ml={4} />
-                  <IconButton size="xs" ml={4} />
+                  yyyy-mm-dd
+                </Td>
+                <Td width="12%" p={1}>
+                  yyyy-mm-dd
+                </Td>
+                <Td width="12%" p={1}>
+                  <IconButton icon={<EditIcon />} size="xs" ml={4} />
+                  <IconButton icon={<DeleteIcon />} size="xs" ml={4} />
                 </Td>
               </Tr>
             </Tbody>
+            {/* TODO: ページネーション機能 */}
           </Table>
         </TableContainer>
       </Box>
