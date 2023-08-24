@@ -32,7 +32,6 @@ export default function Edit() {
             defaultValue=""
             rounded={8}
             h={16}
-            //onChange={handleChange}
             size='md'
             placeholder="Text"
             _placeholder={{ color: 'black', fontWeight: 'bold', textAlign: '' }}
@@ -48,7 +47,6 @@ export default function Edit() {
             rounded={8}
             rows={10}
             resize="none"
-            //onChange={handleChange}
             size='md'
             placeholder="Text"
             _placeholder={{ color: 'black', fontWeight: 'bold' }}
@@ -78,19 +76,20 @@ export default function Edit() {
             </Text>
           </Box>  
         {/* Updateの時間 */}
-        </Flex>
+
+      </Flex>
       {/* 時間 */}
 
-    {/* UPDATEボタン */}
+      {/* UPDATEボタン */}
       <Flex justify="end">
         <Button px={5} background={"green.500"} border='1px' borderColor='green.900' rounded="full" fontSize={18} color="white">
           UPDATE
         </Button>
       </Flex>
-    {/* UPDATEボタン */}
-
+      {/* UPDATEボタン */}
     </Box>
     {/* 中身 */}
+    
   </div>
   )
 }
