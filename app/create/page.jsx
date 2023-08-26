@@ -3,7 +3,6 @@
 import { Heading, Box, Button, Input, RadioGroup, Radio, Stack, Flex, Textarea } from "@chakra-ui/react";
 import { useState } from "react";
 
-
 export default function Create() {
    const [value, setValue] = useState('high')
   return(
@@ -35,7 +34,6 @@ export default function Create() {
             defaultValue=""
             rounded={8}
             h={16}
-            //onChange={handleChange}
             size='md'
             placeholder="Text"
             _placeholder={{ color: 'black', fontWeight: 'bold' }}
@@ -51,7 +49,6 @@ export default function Create() {
             rounded={8}
             rows={10}
             resize="none"
-            //onChange={handleChange}
             size='md'
             placeholder="Text"
             _placeholder={{ color: 'black', fontWeight: 'bold' }}
@@ -88,6 +85,7 @@ export default function Create() {
         </Button>
       </Flex>
       {/* CREATEボタン */}
+      
     </Box>
     {/* 中身 */}
   </div>
