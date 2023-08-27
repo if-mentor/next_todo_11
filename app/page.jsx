@@ -2,10 +2,12 @@
 
 import { Button } from "@chakra-ui/react";
 
-export default function Home() {
+const Home = () => {
   return (
     <div>
       Hello, Team Development #11
     </div>
   )
 }
+
+export default Home;
