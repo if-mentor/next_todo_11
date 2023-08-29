@@ -1,5 +1,7 @@
 "use client";
 
+import { EditIcon } from '@chakra-ui/icons'
+
 import {
   Box,
   Button,
@@ -17,12 +19,20 @@ const Show = () => {
         h="50px"
         mb={5}
         pl="50px"
-        display="flex"
+        pr='30px'
         alignItems="center"
       >
-        TODO
+        <Flex>
+         <Text>
+          TODO
+         </Text>
+         <Spacer />
+         <Button mt='5px'>
+          LOGOUT
+         </Button>
+        </Flex>
       </Heading>
-      <Box ml='40px' mr='40px' maxW='1080px'>{/* コンテンツ部分の最大幅と横の余白 */}
+      <Box m='0 auto' maxW='1080px'>{/* コンテンツ部分の最大幅と横の余白 */}
         <Flex mb='20px' justify="end">
           <Button
           mr='20px'
@@ -30,14 +40,16 @@ const Show = () => {
           bgColor="green.700"
           rounded="full"
           color='white'
-          textAlign="center">
+          textAlign="center"
+          border='1px' borderColor='black'>
             Comment
           </Button>
           <Button
           w='90px'
           bgColor="green.300"
           rounded="full"
-          textAlign="center">
+          textAlign="center"
+          border='1px' borderColor='black'>
             Back
           </Button>
         </Flex>
@@ -57,8 +69,10 @@ const Show = () => {
               <Button w='25%' mr='30px'
               bgColor="green.300"
               rounded="full"
-              textAlign="center">
+              textAlign="center"
+              border='1px' borderColor='black'>
                 Edit
+                <EditIcon ml='2'/>
               </Button>
               <Box w='35%'>
                 <Text>Create</Text>
@@ -71,7 +85,7 @@ const Show = () => {
             </Flex>
           </Box> 
           <Box mb='20px' border='1px' borderColor='gray' h='120px' w='45%'borderRadius='5px'>
-            <Flex bgColor="green.700" color='white' px={3}>
+            <Flex bgColor="green.600" color='white' px={3}>
               <Text>ジョン</Text>
               <Spacer />
               <Text>yyyy/mm/dd</Text>

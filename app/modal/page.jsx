@@ -7,21 +7,22 @@ const ModalPage = () => {
     <>
       <Center>
         <Box
-        w='480px' h='620px'
+        w='480px' h='480px'
         px={5} py={5} mt="120px"
         border='1px' borderColor='gray' 
         borderRadius='10px'>
           <Text fontSize='5xl' as='b'>Comment</Text>
-          <FormControl mt='24px' mb='10px'>
-            <FormLabel>NAME</FormLabel>
+          <FormControl mt='16px' mb='10px'>
+            <FormLabel>Name</FormLabel>
             <Input size='lg' />
           </FormControl>
           <FormControl marginBottom="16px">
             <FormLabel>Your Comment</FormLabel>
-            <Textarea  h='300px' />
+            <Textarea  h='160px' resize='none' />
           </FormControl>
 
-          <Button colorScheme='teal' w='100%'>
+          <Button bgColor="green.600" w='100%' color='white'      border='1px' borderColor='black' 
+          borderRadius='10px'>
             CREATE
           </Button>
         </Box>
