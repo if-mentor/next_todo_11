@@ -32,7 +32,6 @@ export default function Edit() {
             defaultValue=""
             rounded={8}
             h={16}
-            //onChange={handleChange}
             size='md'
             placeholder="Text"
             _placeholder={{ color: 'black', fontWeight: 'bold', textAlign: '' }}
@@ -48,7 +47,6 @@ export default function Edit() {
             rounded={8}
             rows={10}
             resize="none"
-            //onChange={handleChange}
             size='md'
             placeholder="Text"
             _placeholder={{ color: 'black', fontWeight: 'bold' }}

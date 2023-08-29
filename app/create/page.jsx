@@ -85,9 +85,9 @@ export default function Create() {
         </Button>
       </Flex>
       {/* CREATEボタン */}
-      
     </Box>
     {/* 中身 */}
+    
   </div>
   )
 }
