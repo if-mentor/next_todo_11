@@ -1,6 +1,11 @@
 "use client";
 
-import { AddIcon, DeleteIcon, EditIcon, SearchIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+  DeleteIcon,
+  EditIcon,
+  SearchIcon,
+} from "@chakra-ui/icons";
 import {
   Heading,
   FormControl,
@@ -26,6 +31,16 @@ import {
 const Top = () => {
   return (
     <>
+      <Heading
+        bg="#68D391"
+        h="50px"
+        mb={5}
+        pl="50px"
+        display="flex"
+        alignItems="center"
+      >
+        TODO
+      </Heading>
       <Box px={20} py={6}>
         <HStack mb={4}>
           <HStack spacing={2}>
@@ -61,12 +76,7 @@ const Top = () => {
           </HStack>
           <Spacer />
           <Box>
-            <IconButton
-              icon={<AddIcon />}
-              colorScheme="teal"
-              rounded="full"
-              mr={2}
-            >
+            <IconButton icon={<AddIcon />} colorScheme="teal" rounded="full" mr={2}>
               Task作成
             </IconButton>
           </Box>

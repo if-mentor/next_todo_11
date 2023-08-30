@@ -13,6 +13,16 @@ const NotFound = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
+      <Heading
+        bg={"green.300"}
+        h="50px"
+        pl="50px"
+        display="flex"
+        alignItems="center"
+      >
+        TODO
+      </Heading>
+
       <Box align="center" my={24}>
         <Text fontSize="4xl" lineHeight={1} fontWeight="700">
           404
