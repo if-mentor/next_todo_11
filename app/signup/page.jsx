@@ -12,16 +12,6 @@ const SignUp = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <Heading
-        bg={"green.300"}
-        h="50px"
-        pl="50px"
-        display="flex"
-        alignItems="center"
-      >
-        TODO
-      </Heading>
-
       <Box
         bg={"green.100"}
         m={"100px auto"}
