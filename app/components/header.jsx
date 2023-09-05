@@ -2,7 +2,7 @@ import { Flex, Spacer, Heading, Button } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth } from "../../firebase";
 import { useAuthContext } from "../context/AuthContext";
 
 export const Header = () => {
