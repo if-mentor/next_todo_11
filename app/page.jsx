@@ -1,13 +1,56 @@
-'use client'
+"use client";
 
-import { Button } from "@chakra-ui/react";
+import SignUp from "./signup/page";
+import Login from "./login/page";
+import Top from "./top/page";
+import { AuthProvider } from "./context/AuthContext";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import PrivateRoute from "./components/PrivateRoute";
+import { Providers } from "./providers";
 
-const Home = () => {
+const Home = ({ children }) => {
   return (
-    <div>
-      Hello, Team Development #11
-    </div>
-  )
-}
+    <>
+      <AuthProvider>
+        <Providers>
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <PrivateRoute>
+                    <Top />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/top"
+                element={<PrivateRoute>{children}</PrivateRoute>}
+              />
+              <Route
+                path="/create"
+                element={<PrivateRoute>{children}</PrivateRoute>}
+              />
+              <Route
+                path="/edit"
+                element={<PrivateRoute>{children}</PrivateRoute>}
+              />
+              <Route
+                path="/show"
+                element={<PrivateRoute>{children}</PrivateRoute>}
+              />
+              <Route
+                path="/modal"
+                element={<PrivateRoute>{children}</PrivateRoute>}
+              />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/login" element={<Login />} />
+            </Routes>
+          </BrowserRouter>
+        </Providers>
+      </AuthProvider>
+    </>
+  );
+};
 
 export default Home;

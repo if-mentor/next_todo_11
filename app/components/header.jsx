@@ -1,7 +1,17 @@
-import { Box, Flex, Spacer, Heading, Button } from "@chakra-ui/react";
+import { Flex, Spacer, Heading, Button } from "@chakra-ui/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+import { useAuthContext } from "../context/AuthContext";
 
 export const Header = () => {
+  const { user } = useAuthContext();
+  const router = useRouter();
+  const handleLogout = () => {
+    signOut(auth);
+    router.push("/login");
+  };
   return (
     <Flex
       bg={"green.300"}
@@ -16,15 +26,19 @@ export const Header = () => {
         <Link href={"/"}>TODO</Link>
       </Heading>
       <Spacer />
-      <Button
-        color={"white"}
-        bg={"gray.400"}
-        borderRadius={"50px"}
-        h="40px"
-        width={"100px"}
-      >
-        LOGOUT
-      </Button>
+      {user && (
+        <Button
+          onClick={handleLogout}
+          type="button"
+          color={"white"}
+          bg={"gray.400"}
+          borderRadius={"50px"}
+          h="40px"
+          width={"100px"}
+        >
+          LOGOUT
+        </Button>
+      )}
     </Flex>
   );
 };
