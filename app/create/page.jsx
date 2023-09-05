@@ -14,11 +14,7 @@ import {
   FormControl,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-} from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import db from "../firebase";
 import { useRouter } from "next/navigation";
 
@@ -31,24 +27,31 @@ const initialTodo = {
 const priorities = ["High", "Middle", "Low"];
 
 export default function Create() {
-  const router = useRouter()
+  const router = useRouter();
   const [newTodo, setNewTodo] = useState(initialTodo);
 
   const hendleInputChange = (e) => {
     const { name, value } = e.target;
     setNewTodo({ ...newTodo, [name]: value });
-    console.log(new Date());
   };
 
   const handleSubmit = async () => {
-    const collectionRef = collection(db, "posts");
-    await addDoc(collectionRef, {
-      ...newTodo,
-      Create: serverTimestamp(),
-      Update: serverTimestamp(),
-    });
-    setNewTodo(initialTodo);
-    router.push("/top")
+    if (confirm("Todoリストを追加します。よろしいですか？")) {
+      try {
+        const collectionRef = collection(db, "posts");
+        const todo = await addDoc(collectionRef, {
+          ...newTodo,
+          Create: serverTimestamp(),
+          Update: serverTimestamp(),
+        });
+        console.log("todoが追加されました: ", todo);
+        setNewTodo(initialTodo);
+        router.push("/top");
+      } catch (error) {
+        alert("todoの登録に失敗しました。")
+        console.log(error);
+      }
+    }
   };
 
   return (
@@ -83,6 +86,7 @@ export default function Create() {
             _placeholder={{ color: "gray", fontWeight: "bold" }}
             value={newTodo.title}
             onChange={hendleInputChange}
+            required
           />
           {/* TODOのタイトル設定 */}
 
