@@ -1,7 +1,7 @@
 "use client";
 
 import { EditIcon } from '@chakra-ui/icons'
-import {Box,Button,Flex,Text,Heading,Spacer,LINK} from '@chakra-ui/react'
+import {Box,Button,Flex,Text,Heading,Spacer} from '@chakra-ui/react'
 import { BackButton } from "../components/button/BackButton"
 
 const Show = () => {
