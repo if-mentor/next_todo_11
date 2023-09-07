@@ -34,11 +34,21 @@ const Home = ({ children }) => {
               <Route
                 path="/edit"
                 element={<PrivateRoute>{children}</PrivateRoute>}
-              />
+              >
+                <Route
+                  path=":id"
+                  element={<PrivateRoute>{children}</PrivateRoute>}
+                />
+              </Route>
               <Route
                 path="/show"
                 element={<PrivateRoute>{children}</PrivateRoute>}
-              />
+              >
+                <Route
+                  path=":id"
+                  element={<PrivateRoute>{children}</PrivateRoute>}
+                />
+              </Route>
               <Route
                 path="/modal"
                 element={<PrivateRoute>{children}</PrivateRoute>}
