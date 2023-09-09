@@ -2,6 +2,7 @@
 
 import { Heading, Box, Button, Input, RadioGroup, Radio, Stack, Flex, Textarea } from "@chakra-ui/react";
 import { useState } from "react";
+import { BackButton } from "../components/button/BackButton"
 
 export default function Create() {
    const [value, setValue] = useState('high')
@@ -20,9 +21,7 @@ export default function Create() {
 
       {/* Backボタン */}
       <Flex justify="end">
-        <Button px={8} background={"green.300"} border='1px' borderColor='green.600' rounded="full">
-          Back
-        </Button>
+       <BackButton />
       </Flex>
       {/* Backボタン */}
 
