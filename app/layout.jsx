@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import { Inter } from "next/font/google";
-import Home from "./page";
+import { Providers } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ja">
       <body className={inter.className}>
-        <Home>{children}</Home>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
