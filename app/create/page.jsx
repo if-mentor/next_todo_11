@@ -14,6 +14,7 @@ import {
   FormControl,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { BackButton } from "../components/button/BackButton";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import db from "../firebase";
 import { useRouter } from "next/navigation";
@@ -48,7 +49,7 @@ export default function Create() {
         setNewTodo(initialTodo);
         router.push("/top");
       } catch (error) {
-        alert("todoの登録に失敗しました。")
+        alert("todoの登録に失敗しました。");
         console.log(error);
       }
     }
@@ -60,15 +61,7 @@ export default function Create() {
       <Box border={5} p={20} pt={5}>
         {/* Backボタン */}
         <Flex justify="end">
-          <Button
-            px={8}
-            background={"green.300"}
-            border="1px"
-            borderColor="green.600"
-            rounded="full"
-          >
-            Back
-          </Button>
+          <BackButton />
         </Flex>
         {/* Backボタン */}
 
