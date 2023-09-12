@@ -1,5 +1,6 @@
 "use client";
 
+import { v4 as uuidv4} from 'uuid';
 import {
   Heading,
   Box,
@@ -43,6 +44,7 @@ export default function Create() {
         const collectionRef = collection(db, "posts");
         const todo = await addDoc(collectionRef, {
           ...newTodo,
+          Id: uuidv4(),
           Create: serverTimestamp(),
           Update: serverTimestamp(),
         });
