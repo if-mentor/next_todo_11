@@ -14,15 +14,16 @@ import {
   FormControl,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { BackButton } from "../components/button/BackButton";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import db from "../firebase";
+import { BackButton } from "../components/button/BackButton";
 import { useRouter } from "next/navigation";
+import db from "../../firebase";
 
 const initialTodo = {
-  title: "",
-  detail: "",
-  priority: "High",
+  Task: "",
+  Detail: "",
+  Priority: "High",
+  Status: "NOT STARTED",
 };
 
 const priorities = ["High", "Middle", "Low"];
@@ -71,13 +72,13 @@ export default function Create() {
             TITLE
           </Heading>
           <Input
-            name="title"
+            name="Task"
             rounded={8}
             h={16}
             size="md"
             placeholder="Text"
             _placeholder={{ color: "gray", fontWeight: "bold" }}
-            value={newTodo.title}
+            value={newTodo.Task}
             onChange={hendleInputChange}
             required
           />
@@ -88,21 +89,21 @@ export default function Create() {
             DETAIL
           </Heading>
           <Textarea
-            name="detail"
+            name="Detail"
             rounded={8}
             rows={10}
             resize="none"
             size="md"
             placeholder="Text"
             _placeholder={{ color: "gray", fontWeight: "bold" }}
-            value={newTodo.detail}
+            value={newTodo.Detail}
             onChange={hendleInputChange}
           />
           {/* 詳細部分 */}
 
           {/* 優先順位の選択肢 */}
           <Box fontSize="20px" fontWeight="bold">
-            <RadioGroup name="priority" value={newTodo.priority}>
+            <RadioGroup name="Priority" value={newTodo.Priority}>
               <Heading as="h4" size="md" mt="15px">
                 PRIORITY
               </Heading>
