@@ -1,16 +1,19 @@
 import { Flex, Spacer, Heading, Button } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signOut } from "firebase/auth";
 import { auth } from "../../firebase";
 import { useAuthContext } from "../context/AuthContext";
 
 export const Header = () => {
   const { user } = useAuthContext();
   const router = useRouter();
-  const handleLogout = () => {
-    signOut(auth);
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      router.push("/login");
+    } catch {
+      alert("サインアウト失敗");
+    }
   };
   return (
     <Flex

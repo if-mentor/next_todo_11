@@ -3,14 +3,20 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { CacheProvider } from "@chakra-ui/next-js";
 import { Header } from "./components/header";
+import { AuthProvider } from "./context/AuthContext";
+import PrivateRoute from "./components/PrivateRoute";
 
 export function Providers({ children }) {
   return (
-    <CacheProvider>
-      <ChakraProvider>
-        <Header />
-        {children}
-      </ChakraProvider>
-    </CacheProvider>
+    <>
+      <CacheProvider>
+        <ChakraProvider>
+          <AuthProvider>
+            <Header />
+            <PrivateRoute>{children}</PrivateRoute>
+          </AuthProvider>
+        </ChakraProvider>
+      </CacheProvider>
+    </>
   );
 }
