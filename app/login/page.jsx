@@ -3,19 +3,19 @@
 import { Box, Button, Text, Input, VStack } from "@chakra-ui/react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Link from "next/link";
 
 const Login = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [error, setError] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const { email, password } = e.target.elements;
       await signInWithEmailAndPassword(auth, email.value, password.value);
-      navigate("/");
+      router.push("/top");
     } catch (error) {
       // console.log(error);
       switch (error.code) {
@@ -55,7 +55,7 @@ const Login = () => {
               id="email"
               name="email"
               type="email"
-              placeholder="ドメイン正しくないとエラー"
+              placeholder="email"
               autoComplete="email"
               bg={"green.50"}
             />
@@ -68,7 +68,7 @@ const Login = () => {
               id="password"
               name="password"
               type="password"
-              placeholder="6文字以上でないとエラー"
+              placeholder="password"
               autoComplete="password"
               bg={"green.50"}
             />
@@ -93,7 +93,7 @@ const Login = () => {
           </Box>
           <Box mt={"15px"} textAlign={"center"}>
             ユーザー登録は
-            <Link to={"/signup"} style={{ color: "gray" }}>
+            <Link href={"/signup"} style={{ color: "gray" }}>
               こちら
             </Link>
             から

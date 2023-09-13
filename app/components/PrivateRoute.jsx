@@ -1,16 +1,20 @@
 import { useAuthContext } from "../context/AuthContext";
-import { Navigate } from "react-router-dom";
+import { useRouter, usePathname } from "next/navigation";
 
 const PrivateRoute = ({ children }) => {
   const { user } = useAuthContext();
+  const router = useRouter();
+  const pathname = usePathname();
+
   if (!user) {
-    return (
-      <>
-        <Navigate to="/login" />
-      </>
-    );
+    if (pathname !== "/login" && pathname !== "/signup") {
+      router.push("/login");
+    } else {
+      return <>{children}</>;
+    }
+  } else {
+    return <>{children}</>;
   }
-  return <>{children}</>;
 };
 
 export default PrivateRoute;
