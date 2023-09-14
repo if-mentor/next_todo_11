@@ -12,31 +12,20 @@ export function useAuthContext() {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const pathname = usePathname();
-  const [loading, setLoading] = useState(true);
 
   const value = {
     user,
-    loading,
   };
 
   useEffect(() => {
     const unsubscribed = onAuthStateChanged(auth, (user) => {
-      console.log(user);
+      // console.log(user);
       setUser(user);
-      setLoading(false);
     });
     return () => {
       unsubscribed();
     };
   }, [pathname]);
 
-  if (loading) {
-    return <p>loading...</p>;
-  } else {
-    return (
-      <AuthContext.Provider value={value}>
-        {!loading && children}
-      </AuthContext.Provider>
-    );
-  }
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
