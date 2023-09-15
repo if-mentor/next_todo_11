@@ -3,10 +3,11 @@
 import { Heading, Box, Button, Text, Input, Flex, Textarea } from "@chakra-ui/react";
 import { BackButton } from "../../components/button/BackButton"
 
+
 export default function Edit() {
   return(
     <div>
-  
+    
     {/* 中身 */}
       <Box border={5} p={20} pt={5}>
 
