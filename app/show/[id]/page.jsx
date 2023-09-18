@@ -1,25 +1,12 @@
 "use client";
 
 import { EditIcon } from '@chakra-ui/icons'
-import {Box,Button,Flex,Text,Heading,Spacer} from '@chakra-ui/react'
-import { BackButton } from "../components/button/BackButton"
+import {Box,Button,Flex,Text,Spacer} from '@chakra-ui/react'
+import { BackButton } from "../../components/button/BackButton"
 
 const Show = () => {
   return (
     <>
-      {/* ヘッダー */}
-      <Heading bg="#68D391" h="50px" mb={5} pl="50px" pr='30px' alignItems="center">
-        <Flex>
-         <Text>
-          TODO
-         </Text>
-         <Spacer />
-         <Button mt='5px'>
-          LOGOUT
-         </Button>
-        </Flex>
-      </Heading>
-
       {/* コンテンツ */}
       <Box m='0 auto' maxW='1080px'>{/* コンテンツ部分の最大幅と横の余白 */}
 

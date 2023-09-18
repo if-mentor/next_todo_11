@@ -17,7 +17,7 @@ const SignUp = () => {
       await createUserWithEmailAndPassword(auth, email.value, password.value);
       router.push("/top");
     } catch (error) {
-      // console.log(error);
+       console.log(error);
       switch (error.code) {
         case "auth/network-request-failed":
           setError(
