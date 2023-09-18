@@ -1,19 +1,13 @@
 'use client'
 
 import { Heading, Box, Button, Text, Input, Flex, Textarea } from "@chakra-ui/react";
-import { BackButton } from "../components/button/BackButton"
+import { BackButton } from "../../components/button/BackButton"
+
 
 export default function Edit() {
   return(
     <div>
-    {/* ヘッダー */}   
-      <Box background={"green.300"} p={3} px={50}>
-        <Heading as='h2' size='2xl'>
-          TODO
-        </Heading>
-      </Box>
-    {/* ヘッダー */}
-  
+    
     {/* 中身 */}
       <Box border={5} p={20} pt={5}>
 
