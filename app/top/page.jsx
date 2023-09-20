@@ -1,20 +1,45 @@
 "use client";
 
 import { AddIcon, DeleteIcon, EditIcon, SearchIcon } from "@chakra-ui/icons";
-import { FormControl, FormLabel, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Box, HStack, Button, Select, Input, InputRightElement, InputGroup, IconButton, Spacer } from "@chakra-ui/react";
+import {
+  FormControl,
+  FormLabel,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Box,
+  HStack,
+  Button,
+  Select,
+  Input,
+  InputRightElement,
+  InputGroup,
+  IconButton,
+  Spacer,
+} from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { collection, deleteDoc, doc, getDocs, orderBy, query } from "firebase/firestore"
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import db from "../../firebase";
-import { format } from 'date-fns'
+import { format } from "date-fns";
 import Link from "next/link";
 
 const Top = () => {
-
   //状態
-   const [todos, setTodos] = useState([])
+  const [todos, setTodos] = useState([]);
   //画面遷移用
-   const router = useRouter();
+  const router = useRouter();
 
   //firebaseからデータを取得する
   useEffect(() => {
@@ -23,51 +48,58 @@ const Top = () => {
     const q = query(todoData, orderBy("Update", "desc"));
     getDocs(q).then((snapShot) => {
       const getTodoData = snapShot.docs.map((doc) => {
-        return { 
-          Create: format(doc.data().Create.toDate(), 'yyyy-MM-dd HH:mm'),
-          Detail: doc.data().Detail, 
-          Id: doc.data().Id, 
-          Priority: doc.data().Priority, 
-          Status: doc.data().Status, 
-          Task: doc.data().Task, 
-          Update: format(doc.data().Update.toDate(), 'yyyy-MM-dd HH:mm')
-        }
-      })
-      setTodos(getTodoData)
+        console.log("documentData", doc.data());
+        console.log("時間", new Date(doc.data().Create.toDate()));
+
+        return {
+          Create: format(
+            new Date(doc.data().Create.toDate()),
+            "yyyy-MM-dd HH:mm"
+          ),
+          Detail: doc.data().Detail,
+          Id: doc.data().Id,
+          Priority: doc.data().Priority,
+          Status: doc.data().Status,
+          Task: doc.data().Task,
+          Update: format(
+            new Date(doc.data().Update.toDate()),
+            "yyyy-MM-dd HH:mm"
+          ),
+        };
+      });
+      setTodos(getTodoData);
       // console.log(todos)
-    })
-  }, [])
+    });
+  }, []);
 
   //Createページに遷移する関数
   const linkToCreate = () => {
     //useRouterを使用した動的なページネーションの設定
-    router.push("/create")
-  }
+    router.push("/create");
+  };
 
   //Editページに遷移する関数
   const linkToEdit = (Id) => {
     //useRouterを使用した動的なページネーションの設定
-    router.push(`/edit/${Id}`)
-  }
+    router.push(`/edit/${Id}`);
+  };
 
   //Deleteボタン押下時に動く関数
-   const DeleteTodo = (Id) => {
+  const DeleteTodo = (Id) => {
     //firebaseの中のデータを削除する（バック側）
-    deleteDoc(doc(db,"posts", Id))
+    deleteDoc(doc(db, "posts", Id));
     //表示するための処理（フロント側）
-    const deleteTodo = todos.filter((todo) => todo.Id !== Id)
+    const deleteTodo = todos.filter((todo) => todo.Id !== Id);
     setTodos(deleteTodo);
-  }
+  };
 
   return (
     <>
-    {/* 中身 */}
+      {/* 中身 */}
       <Box px={20} py={6}>
         <HStack mb={4}>
-
           {/* 検索部分 */}
           <HStack spacing={2}>
-
             {/* SEARCH部分 */}
             <FormControl>
               <FormLabel>SEARCH</FormLabel>
@@ -108,27 +140,30 @@ const Top = () => {
               </Button>
             </Box>
             {/* RESETボタン */}
-            
           </HStack>
           {/* 検索部分 */}
 
           <Spacer />
 
           {/* createボタン */}
-            <Box>
-              <IconButton icon={<AddIcon />} colorScheme="teal" rounded="full" mr={2} onClick={linkToCreate}>
-                Task作成
-              </IconButton>
-            </Box>
+          <Box>
+            <IconButton
+              icon={<AddIcon />}
+              colorScheme="teal"
+              rounded="full"
+              mr={2}
+              onClick={linkToCreate}
+            >
+              Task作成
+            </IconButton>
+          </Box>
           {/* createボタン */}
-
         </HStack>
 
         {/* Todoリスト */}
         <TableContainer>
           <Table variant="simple">
             <Thead bgColor="green.300">
-
               {/* Todoリストのタイトル */}
               <Tr>
                 <Th width="40%">Task</Th>
@@ -139,46 +174,65 @@ const Top = () => {
                 <Th width="12%">Action</Th>
               </Tr>
               {/* Todoリストのタイトル */}
-
             </Thead>
 
             {/* Todoリスト */}
             <Tbody>
-              {todos.map((todo) =>{
-
-                return(
+              {todos.map((todo) => {
+                return (
                   <Tr key={todo.Id}>
-                <Td width="40%" p={1} >
-                  <Link href={`/show/${todo.Id}`} style={{ cursor: "pointer" }} >
-                    {todo.Task}
-                  </Link>
-                </Td>
-                <Td width="12%" p={1}>
-                  <Button p={2} bgColor="green.100" rounded="full" textAlign="center">
-                    DOING
-                  </Button>
-                </Td>
-                <Td width="12%" p={1}>
-                  <Select size="sm">
-                    <option value="High">high</option>
-                    <option value="Middle">middle</option>
-                    <option value="Low">low</option>
-                  </Select>
-                </Td>
-                <Td width="12%" p={2}>
-                  {todo.Create}
-                </Td>
-                <Td width="12%" p={2}>
-                  {todo.Update}
-                </Td>
-                <Td width="12%" p={1}>
-                  <IconButton icon={<EditIcon />} size="xs" ml={4} onClick={() =>{linkToEdit(todo.Id)}} />
-                  <IconButton icon={<DeleteIcon />} size="xs" ml={4} onClick={() => {DeleteTodo(todo.Id)}} />
-                </Td>
-              </Tr>
-                )
+                    <Td width="40%" p={1}>
+                      <Link
+                        href={`/show/${todo.Id}`}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {todo.Task}
+                      </Link>
+                    </Td>
+                    <Td width="12%" p={1}>
+                      <Button
+                        p={2}
+                        bgColor="green.100"
+                        rounded="full"
+                        textAlign="center"
+                      >
+                        DOING
+                      </Button>
+                    </Td>
+                    <Td width="12%" p={1}>
+                      <Select size="sm">
+                        <option value="High">high</option>
+                        <option value="Middle">middle</option>
+                        <option value="Low">low</option>
+                      </Select>
+                    </Td>
+                    <Td width="12%" p={2}>
+                      {todo.Create}
+                    </Td>
+                    <Td width="12%" p={2}>
+                      {todo.Update}
+                    </Td>
+                    <Td width="12%" p={1}>
+                      <IconButton
+                        icon={<EditIcon />}
+                        size="xs"
+                        ml={4}
+                        onClick={() => {
+                          linkToEdit(todo.Id);
+                        }}
+                      />
+                      <IconButton
+                        icon={<DeleteIcon />}
+                        size="xs"
+                        ml={4}
+                        onClick={() => {
+                          DeleteTodo(todo.Id);
+                        }}
+                      />
+                    </Td>
+                  </Tr>
+                );
               })}
-              
             </Tbody>
             {/* Todoリスト */}
 
@@ -186,10 +240,8 @@ const Top = () => {
           </Table>
         </TableContainer>
         {/* Todoリスト */}
-
       </Box>
       {/* 中身 */}
-
     </>
   );
 };
