@@ -29,7 +29,7 @@ import {
   getDocs,
   orderBy,
   query,
-  setDoc,
+  serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -87,31 +87,16 @@ const Top = () => {
   };
 
   //Priority選択時に動く関数
-  const onChangeSubTodoStatus = (
-    Create,
-    Detail,
-    Id,
-    Status,
-    Task,
-    Update,
-    e
-  ) => {
-    //該当するidのデータのPriorityを更新する（バック側）
-    // setDoc(doc(db, "posts", Id), {
-    //   Create,
-    //   Detail,
-    //   Id,
-    //   Priority: e.target.value,
-    //   Status,
-    //   Task,
-    //   Update,
-    // });
+  const onChangeSubTodoStatus = (Id, e) => {
+    //該当するidのデータのPriorityとUpdateを更新する（バック側）
     updateDoc(doc(db, "posts", Id), {
       Priority: e.target.value,
+      Update: serverTimestamp(),
     });
-    //該当するidのデータのPriorityを更新する（フロント側）
+    console.log(Id);
+    //該当するidのデータのPriorityとUpdateを更新する（フロント側）
     const stateChangeTodo = todos.map((todo) => {
-      todo.Id === Id
+      return todo.Id === Id
         ? {
             Create: todo.Create,
             Detail: todo.Detail,
@@ -236,17 +221,7 @@ const Top = () => {
                       <Select
                         size="sm"
                         value={todo.Priority}
-                        onChange={(e) =>
-                          onChangeSubTodoStatus(
-                            todo.Create,
-                            todo.Detail,
-                            todo.Id,
-                            todo.Status,
-                            todo.Task,
-                            todo.Update,
-                            e
-                          )
-                        }
+                        onChange={(e) => onChangeSubTodoStatus(todo.Id, e)}
                       >
                         <option value="High">high</option>
                         <option value="Middle">middle</option>
