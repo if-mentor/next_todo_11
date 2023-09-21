@@ -82,6 +82,7 @@ const Show = () => {
       getDocs(cmtQueryRef).then((cmtSnapShot) => {
         const cmtObj = cmtSnapShot.docs.map((doc) => {
           return {
+            commentId: doc.data().commentId,
             commentName: doc.data().commentName,
             commentDetail: doc.data().commentDetail,
             commentCreate: format(doc.data().commentCreate.toDate(), "yyyy-MM-dd HH:mm"),
@@ -188,7 +189,13 @@ const Show = () => {
           <Box w="45%">
             {comments.map((comment) => {
               return (
-                <Box mb="20px" border="1px" borderColor="gray" borderRadius="5px" key={comment.Id}>
+                <Box
+                  mb="20px"
+                  border="1px"
+                  borderColor="gray"
+                  borderRadius="5px"
+                  key={comment.commentId}
+                >
                   <Flex bgColor="green.600" color="white" px={3}>
                     <Text>{comment.commentName}</Text>
                     <Spacer />
