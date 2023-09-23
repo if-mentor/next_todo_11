@@ -61,7 +61,7 @@ const Top = () => {
         };
       });
       setTodos(getTodoData);
-      console.log(todos);
+      // console.log(todos);
     });
   }, []);
 
@@ -93,7 +93,7 @@ const Top = () => {
       Priority: e.target.value,
       Update: serverTimestamp(),
     });
-    console.log(Id);
+    // console.log(Id);
     //該当するidのデータのPriorityとUpdateを更新する（フロント側）
     const stateChangeTodo = todos.map((todo) => {
       return todo.Id === Id
@@ -109,6 +109,20 @@ const Top = () => {
         : todo;
     });
     setTodos(stateChangeTodo);
+  };
+
+  // const btn = document.getElementById("btn");
+  // console.log(btn);
+  // btn.addEventListener("click", () => {
+  //   btn.textContent = "押されました";
+  // });
+
+  //Statusボタンを押下時にStatusが変更される
+  const onClickChangeStatus = (Id) => {
+    //statusの配列を作る
+    const status = ["NOT STARTED", "DOING", "DONE"];
+    //statusの配列を順番に回す(if文を使う簡単書く量は増える、配列012を使ってfilterかmap関数で回す時の条件statusと配列の内容が一致したら要素が入ってくるlengthを使うとできる、)
+    //順番に回したstatusの配列の内容をupdateDocで更新する
   };
 
   return (
@@ -210,11 +224,15 @@ const Top = () => {
                     <Td width="12%" p={1}>
                       <Button
                         p={2}
+                        width={100}
+                        fontSize={4}
                         bgColor="green.100"
                         rounded="full"
                         textAlign="center"
+                        // id="btn"
+                        onClick={() => onClickChangeStatus(todo.Id)}
                       >
-                        DOING
+                        {todo.Status}
                       </Button>
                     </Td>
                     <Td width="12%" p={1}>
@@ -223,9 +241,9 @@ const Top = () => {
                         value={todo.Priority}
                         onChange={(e) => onChangeSubTodoStatus(todo.Id, e)}
                       >
-                        <option value="High">high</option>
-                        <option value="Middle">middle</option>
-                        <option value="Low">low</option>
+                        <option value="High">High</option>
+                        <option value="Middle">Middle</option>
+                        <option value="Low">Low</option>
                       </Select>
                     </Td>
                     <Td width="12%" p={2}>
