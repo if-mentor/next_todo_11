@@ -12,20 +12,25 @@ export function useAuthContext() {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const pathname = usePathname();
+  const [loading, setLoading] = useState(true);
 
   const value = {
     user,
+    loading,
   };
 
   useEffect(() => {
     const unsubscribed = onAuthStateChanged(auth, (user) => {
-      //console.log(user);
+      // console.log(user);
       setUser(user);
+      setLoading(false);
     });
     return () => {
       unsubscribed();
     };
   }, [pathname]);
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  if (!loading) {
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  }
 }

@@ -50,18 +50,27 @@ const Top = () => {
     const q = query(todoData, orderBy("Update", "desc"));
     getDocs(q).then((snapShot) => {
       const getTodoData = snapShot.docs.map((doc) => {
+        // console.log("documentData", doc.data());
+        // console.log("時間", new Date(doc.data().Create.toDate()));
+
         return {
-          Create: format(doc.data().Create.toDate(), "yyyy-MM-dd HH:mm"),
+          Create: format(
+            new Date(doc.data().Create.toDate()),
+            "yyyy-MM-dd HH:mm"
+          ),
           Detail: doc.data().Detail,
           Id: doc.data().Id,
           Priority: doc.data().Priority,
           Status: doc.data().Status,
           Task: doc.data().Task,
-          Update: format(doc.data().Update.toDate(), "yyyy-MM-dd HH:mm"),
+          Update: format(
+            new Date(doc.data().Update.toDate()),
+            "yyyy-MM-dd HH:mm"
+          ),
         };
       });
       setTodos(getTodoData);
-      // console.log(todos);
+      // console.log(todos)
     });
   }, []);
 
@@ -96,34 +105,19 @@ const Top = () => {
     // console.log(Id);
     //該当するidのデータのPriorityとUpdateを更新する（フロント側）
     const stateChangeTodo = todos.map((todo) => {
-      return todo.Id === Id
-        ? {
-            Create: todo.Create,
-            Detail: todo.Detail,
-            Id: todo.Id,
-            Priority: e.target.value,
-            Status: todo.Status,
-            Task: todo.Task,
-            Update: todo.Update,
-          }
-        : todo;
+      return todo.Id === Id ? { ...todo, Priority: e.target.value } : todo;
     });
     setTodos(stateChangeTodo);
+    location.reload();
   };
-
-  // const btn = document.getElementById("btn");
-  // console.log(btn);
-  // btn.addEventListener("click", () => {
-  //   btn.textContent = "押されました";
-  // });
 
   //Statusボタンを押下時にStatusが変更される
-  const onClickChangeStatus = (Id) => {
-    //statusの配列を作る
-    const status = ["NOT STARTED", "DOING", "DONE"];
-    //statusの配列を順番に回す(if文を使う簡単書く量は増える、配列012を使ってfilterかmap関数で回す時の条件statusと配列の内容が一致したら要素が入ってくるlengthを使うとできる、)
-    //順番に回したstatusの配列の内容をupdateDocで更新する
-  };
+  // const onClickChangeStatus = (Id) => {
+  //   //statusの配列を作る
+  //   const status = ["NOT STARTED", "DOING", "DONE"];
+  //   //statusの配列を順番に回す(if文を使う簡単書く量は増える、配列012を使ってfilterかmap関数で回す時の条件statusと配列の内容が一致したら要素が入ってくるlengthを使うとできる、)
+  //   //順番に回したstatusの配列の内容をupdateDocで更新する
+  // };
 
   return (
     <>
@@ -230,7 +224,7 @@ const Top = () => {
                         rounded="full"
                         textAlign="center"
                         // id="btn"
-                        onClick={() => onClickChangeStatus(todo.Id)}
+                        // onClick={() => onClickChangeStatus(todo.Id)}
                       >
                         {todo.Status}
                       </Button>
