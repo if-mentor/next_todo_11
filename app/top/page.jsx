@@ -52,22 +52,9 @@ const Top = () => {
       const getTodoData = snapShot.docs.map((doc) => {
         // console.log("documentData", doc.data());
         // console.log("時間", new Date(doc.data().Create.toDate()));
-
-        return {
-          Create: format(
-            new Date(doc.data().Create.toDate()),
-            "yyyy-MM-dd HH:mm"
-          ),
-          Detail: doc.data().Detail,
-          Id: doc.data().Id,
-          Priority: doc.data().Priority,
-          Status: doc.data().Status,
-          Task: doc.data().Task,
-          Update: format(
-            new Date(doc.data().Update.toDate()),
-            "yyyy-MM-dd HH:mm"
-          ),
-        };
+        const { Create, Detail, Id, Priority, Status, Task, Update } =
+          doc.data();
+        return { Create, Detail, Id, Priority, Status, Task, Update };
       });
       setTodos(getTodoData);
       // console.log(todos)
@@ -96,7 +83,7 @@ const Top = () => {
   };
 
   //Priority選択時に動く関数
-  const onChangeSubTodoStatus = (Id, e) => {
+  const onChangeTodoSubPriority = (Id, e) => {
     //該当するidのデータのPriorityとUpdateを更新する（バック側）
     updateDoc(doc(db, "posts", Id), {
       Priority: e.target.value,
@@ -104,10 +91,10 @@ const Top = () => {
     });
     // console.log(Id);
     //該当するidのデータのPriorityとUpdateを更新する（フロント側）
-    const stateChangeTodo = todos.map((todo) => {
+    const priorityChangeTodo = todos.map((todo) => {
       return todo.Id === Id ? { ...todo, Priority: e.target.value } : todo;
     });
-    setTodos(stateChangeTodo);
+    setTodos(priorityChangeTodo);
     location.reload();
   };
 
@@ -115,8 +102,17 @@ const Top = () => {
   // const onClickChangeStatus = (Id) => {
   //   //statusの配列を作る
   //   const status = ["NOT STARTED", "DOING", "DONE"];
-  //   //statusの配列を順番に回す(if文を使う簡単書く量は増える、配列012を使ってfilterかmap関数で回す時の条件statusと配列の内容が一致したら要素が入ってくるlengthを使うとできる、)
-  //   //順番に回したstatusの配列の内容をupdateDocで更新する
+  //   if(){
+
+  //     //statusの配列を順番に回す
+  //     //(if文を使う簡単書く量は増える、
+  //     //配列012を使ってfilterかmap関数で回す時の条件statusと配列の内容が一致したら要素が入ってくる
+  //     //lengthを使うとできる、)
+  //     const todoStatus = status[status.length + 1]
+  //   }else{
+
+  //   }
+  //   順番に回したstatusの配列の内容をupdateDocで更新する
   // };
 
   return (
@@ -233,7 +229,7 @@ const Top = () => {
                       <Select
                         size="sm"
                         value={todo.Priority}
-                        onChange={(e) => onChangeSubTodoStatus(todo.Id, e)}
+                        onChange={(e) => onChangeTodoSubPriority(todo.Id, e)}
                       >
                         <option value="High">High</option>
                         <option value="Middle">Middle</option>
@@ -241,10 +237,16 @@ const Top = () => {
                       </Select>
                     </Td>
                     <Td width="12%" p={2}>
-                      {todo.Create}
+                      {format(
+                        new Date(todo.Create.toDate()),
+                        "yyyy-MM-dd HH:mm"
+                      )}
                     </Td>
                     <Td width="12%" p={2}>
-                      {todo.Update}
+                      {format(
+                        new Date(todo.Update.toDate()),
+                        "yyyy-MM-dd HH:mm"
+                      )}
                     </Td>
                     <Td width="12%" p={1}>
                       <IconButton
