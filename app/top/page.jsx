@@ -15,6 +15,14 @@ const Top = () => {
    const [todos, setTodos] = useState([])
   //画面遷移用
    const router = useRouter();
+  //Priority検索用
+  const [selectedPriority, setSelectedPriority] = useState("");
+  // Status検索用
+  const [selectedStatus, setSelectedStatus] = useState("");
+  // 検索用ボタンを空に設定
+  const initialPriority = "";
+  const initialStatus = "";
+
 
   //firebaseからデータを取得する
   useEffect(() => {
@@ -59,6 +67,30 @@ const Top = () => {
     setTodos(deleteTodo);
   }
 
+  // 優先度に基づいてデータをフィルタリング
+  // 状態と優先度の両方に基づいてデータをフィルタリング
+  const filteredTodos = todos.filter((todo) => {
+    if (selectedStatus === "" && selectedPriority === "") {
+     // どちらも選択されていない場合、すべてのタスクを表示
+      return true;
+    } else if (selectedStatus === "" && selectedPriority !== "") {
+    // 状態が選択されておらず、優先度が選択されている場合
+      return todo.Priority === selectedPriority;
+    } else if (selectedStatus !== "" && selectedPriority === "") {
+    // 状態が選択されており、優先度が選択されていない場合
+      return todo.Status === selectedStatus;
+    } else {
+    // 両方が選択されている場合
+      return todo.Status === selectedStatus && todo.Priority === selectedPriority;
+    }
+  });
+
+  //Resetボタン押下時に初期値にリセット
+  const handleReset = () => {
+    setSelectedPriority(initialPriority);
+    setSelectedStatus(initialStatus); 
+  };
+
   return (
     <>
     {/* 中身 */}
@@ -83,9 +115,15 @@ const Top = () => {
             {/* STATUS部分 */}
             <FormControl>
               <FormLabel>STATUS</FormLabel>
-              <Select placeholder="状態を選択" size="sm">
-                <option>未完了</option>
-                <option>完了</option>
+              <Select 
+              placeholder="---------" 
+              size="sm"
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              >
+                <option value="NOT STARTED">NOT STARTED</option>
+                <option value="DOING">DOING</option>
+                <option value="DONE">DONE</option>
               </Select>
             </FormControl>
             {/* STATUS部分 */}
@@ -93,17 +131,27 @@ const Top = () => {
             {/* PRIORITY部分 */}
             <FormControl>
               <FormLabel>PRIORITY</FormLabel>
-              <Select placeholder="重要度を選択" size="sm">
-                <option>高</option>
-                <option>中</option>
-                <option>低</option>
+              <Select 
+              placeholder="---------" 
+              size="sm"
+              value={selectedPriority}
+              onChange={(e) => setSelectedPriority(e.target.value)}
+              >
+                <option value="High">High</option>
+                <option value="Middle">Middle</option>
+                <option value="Low">Low</option>
               </Select>
             </FormControl>
             {/* PRIORITY部分 */}
 
             {/* RESETボタン */}
             <Box>
-              <Button variant="outline" colorScheme="gray" rounded="full">
+              <Button 
+              variant="outline" 
+              colorScheme="gray" 
+              rounded="full"
+              onClick={handleReset}
+              >
                 RESET
               </Button>
             </Box>
@@ -144,7 +192,7 @@ const Top = () => {
 
             {/* Todoリスト */}
             <Tbody>
-              {todos.map((todo) =>{
+              {filteredTodos.map((todo) =>{
 
                 return(
                   <Tr key={todo.Id}>
