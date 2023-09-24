@@ -52,22 +52,9 @@ const Top = () => {
       const getTodoData = snapShot.docs.map((doc) => {
         // console.log("documentData", doc.data());
         // console.log("時間", new Date(doc.data().Create.toDate()));
-
-        return {
-          Create: format(
-            new Date(doc.data().Create.toDate()),
-            "yyyy-MM-dd HH:mm"
-          ),
-          Detail: doc.data().Detail,
-          Id: doc.data().Id,
-          Priority: doc.data().Priority,
-          Status: doc.data().Status,
-          Task: doc.data().Task,
-          Update: format(
-            new Date(doc.data().Update.toDate()),
-            "yyyy-MM-dd HH:mm"
-          ),
-        };
+        const { Create, Detail, Id, Priority, Status, Task, Update } =
+          doc.data();
+        return { Create, Detail, Id, Priority, Status, Task, Update };
       });
       setTodos(getTodoData);
       // console.log(todos)
@@ -96,7 +83,7 @@ const Top = () => {
   };
 
   //Priority選択時に動く関数
-  const onChangeSubTodoStatus = (Id, e) => {
+  const onChangeSubTodoPriority = (Id, e) => {
     //該当するidのデータのPriorityとUpdateを更新する（バック側）
     updateDoc(doc(db, "posts", Id), {
       Priority: e.target.value,
@@ -104,20 +91,44 @@ const Top = () => {
     });
     // console.log(Id);
     //該当するidのデータのPriorityとUpdateを更新する（フロント側）
-    const stateChangeTodo = todos.map((todo) => {
+    const priorityChangeTodo = todos.map((todo) => {
       return todo.Id === Id ? { ...todo, Priority: e.target.value } : todo;
     });
-    setTodos(stateChangeTodo);
+    setTodos(priorityChangeTodo);
     location.reload();
   };
 
   //Statusボタンを押下時にStatusが変更される
-  // const onClickChangeStatus = (Id) => {
-  //   //statusの配列を作る
-  //   const status = ["NOT STARTED", "DOING", "DONE"];
-  //   //statusの配列を順番に回す(if文を使う簡単書く量は増える、配列012を使ってfilterかmap関数で回す時の条件statusと配列の内容が一致したら要素が入ってくるlengthを使うとできる、)
-  //   //順番に回したstatusの配列の内容をupdateDocで更新する
-  // };
+  const onClickStatus = (Id, Status) => {
+    //Statusの内容を変更する
+    console.log(Status);
+    switch (Status) {
+      case "NOT STARTED":
+        //変更したStatusの内容をFirebaseに更新する
+        updateDoc(doc(db, "posts", Id), {
+          Status: "DOING",
+          Update: serverTimestamp(),
+        });
+        location.reload();
+        break;
+      case "DOING":
+        //変更したStatusの内容をFirebaseに更新する
+        updateDoc(doc(db, "posts", Id), {
+          Status: "DONE",
+          Update: serverTimestamp(),
+        });
+        location.reload();
+        break;
+      case "DONE":
+        //変更したStatusの内容をFirebaseに更新する
+        updateDoc(doc(db, "posts", Id), {
+          Status: "NOT STARTED",
+          Update: serverTimestamp(),
+        });
+        location.reload();
+        break;
+    }
+  };
 
   return (
     <>
@@ -216,24 +227,52 @@ const Top = () => {
                       </Link>
                     </Td>
                     <Td width="12%" p={1}>
-                      <Button
-                        p={2}
-                        width={100}
-                        fontSize={4}
-                        bgColor="green.100"
-                        rounded="full"
-                        textAlign="center"
-                        // id="btn"
-                        // onClick={() => onClickChangeStatus(todo.Id)}
-                      >
-                        {todo.Status}
-                      </Button>
+                      {todo.Status === "NOT STARTED" ? (
+                        <Button
+                          p={2}
+                          width={100}
+                          fontSize={4}
+                          bgColor="green.50"
+                          rounded="full"
+                          textAlign="center"
+                          // id="btn"
+                          onClick={() => onClickStatus(todo.Id, todo.Status)}
+                        >
+                          {todo.Status}
+                        </Button>
+                      ) : todo.Status === "DOING" ? (
+                        <Button
+                          p={2}
+                          width={100}
+                          fontSize={4}
+                          bgColor="green.200"
+                          rounded="full"
+                          textAlign="center"
+                          // id="btn"
+                          onClick={() => onClickStatus(todo.Id, todo.Status)}
+                        >
+                          {todo.Status}
+                        </Button>
+                      ) : (
+                        <Button
+                          p={2}
+                          width={100}
+                          fontSize={4}
+                          bgColor="green.500"
+                          rounded="full"
+                          textAlign="center"
+                          // id="btn"
+                          onClick={() => onClickStatus(todo.Id, todo.Status)}
+                        >
+                          {todo.Status}
+                        </Button>
+                      )}
                     </Td>
                     <Td width="12%" p={1}>
                       <Select
                         size="sm"
                         value={todo.Priority}
-                        onChange={(e) => onChangeSubTodoStatus(todo.Id, e)}
+                        onChange={(e) => onChangeSubTodoPriority(todo.Id, e)}
                       >
                         <option value="High">High</option>
                         <option value="Middle">Middle</option>
@@ -241,10 +280,16 @@ const Top = () => {
                       </Select>
                     </Td>
                     <Td width="12%" p={2}>
-                      {todo.Create}
+                      {format(
+                        new Date(todo.Create.toDate()),
+                        "yyyy-MM-dd HH:mm"
+                      )}
                     </Td>
                     <Td width="12%" p={2}>
-                      {todo.Update}
+                      {format(
+                        new Date(todo.Update.toDate()),
+                        "yyyy-MM-dd HH:mm"
+                      )}
                     </Td>
                     <Td width="12%" p={1}>
                       <IconButton
