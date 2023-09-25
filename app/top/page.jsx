@@ -23,6 +23,7 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import {
+  Timestamp,
   collection,
   deleteDoc,
   doc,
@@ -44,7 +45,7 @@ const Top = () => {
   const router = useRouter();
 
   //firebaseからデータを取得する
-  useEffect(() => {
+  const todoDataFromFirebase = () => {
     const todoData = collection(db, "posts");
     //Updateを基準に降順で取得
     const q = query(todoData, orderBy("Update", "desc"));
@@ -59,6 +60,10 @@ const Top = () => {
       setTodos(getTodoData);
       // console.log(todos)
     });
+  };
+
+  useEffect(() => {
+    todoDataFromFirebase();
   }, []);
 
   //Createページに遷移する関数
@@ -76,8 +81,7 @@ const Top = () => {
     //firebaseの中のデータを削除する（バック側）
     deleteDoc(doc(db, "posts", Id));
     //表示するための処理（フロント側）
-    const deleteTodo = todos.filter((todo) => todo.Id !== Id);
-    setTodos(deleteTodo);
+    todoDataFromFirebase();
   };
 
   //Priority選択時に動く関数
@@ -85,18 +89,10 @@ const Top = () => {
     //該当するidのデータのPriorityとUpdateを更新する（バック側）
     updateDoc(doc(db, "posts", Id), {
       Priority: e.target.value,
-      Update: serverTimestamp(),
+      Update: Timestamp.now(),
     });
-    // console.log(Id);
-    //該当するidのデータのPriorityとUpdateを更新する（フロント側）
-    const updateDate = format(new Date(), "yyyy-MM-dd HH:mm");
-    const priorityChangeTodo = todos.map((todo) => {
-      return todo.Id === Id
-        ? { ...todo, Priority: e.target.value, Update: updateDate }
-        : todo;
-    });
-    setTodos(priorityChangeTodo);
-    // location.reload();
+    //表示するための処理（フロント側）
+    todoDataFromFirebase();
   };
 
   //Statusボタンを押下時にStatusが変更される
@@ -104,56 +100,33 @@ const Top = () => {
     //Statusの内容を変更する
     // console.log(Status);
     switch (Status) {
-      case "NOT STARTED":
-        //NOT STARTED → DOING
+      case "NOT STARTED": //NOT STARTED → DOING
         //変更したStatusの内容をFirebaseに更新する
         updateDoc(doc(db, "posts", Id), {
           Status: "DOING",
-          Update: serverTimestamp(),
+          Update: Timestamp.now(),
         });
-        //該当するidのデータのStatusとUpdateを更新する（フロント側）
-        const updateDoingDate = format(new Date(), "yyyy-MM-dd HH:mm");
-        const changeDoingTodo = todos.map((todo) => {
-          return todo.Id === Id
-            ? { ...todo, Status: "DOING", Update: updateDoingDate }
-            : todo;
-        });
-        setTodos(changeDoingTodo);
-        // location.reload();
+        //表示するための処理（フロント側）
+        todoDataFromFirebase();
         break;
-      case "DOING":
-        //DOING → DONE
+      case "DOING": //DOING → DONE
         //変更したStatusの内容をFirebaseに更新する
         const updateDoneDate = format(new Date(), "yyyy-MM-dd HH:mm");
         updateDoc(doc(db, "posts", Id), {
           Status: "DONE",
-          Update: serverTimestamp(),
+          Update: Timestamp.now(),
         });
-        //該当するidのデータのStatusとUpdateを更新する（フロント側）
-        const changeDoneTodo = todos.map((todo) => {
-          return todo.Id === Id
-            ? { ...todo, Status: "DONE", Update: updateDoneDate }
-            : todo;
-        });
-        setTodos(changeDoneTodo);
-        // location.reload();
+        //表示するための処理（フロント側）
+        todoDataFromFirebase();
         break;
-      case "DONE":
-        //DONE → NOT STARTED
+      case "DONE": //DONE → NOT STARTED
         //変更したStatusの内容をFirebaseに更新する
         updateDoc(doc(db, "posts", Id), {
           Status: "NOT STARTED",
-          Update: serverTimestamp(),
+          Update: Timestamp.now(),
         });
-        //該当するidのデータのStatusとUpdateを更新する（フロント側）
-        const updateNotStartedDate = format(new Date(), "yyyy-MM-dd HH:mm");
-        const changeNotStartedTodo = todos.map((todo) => {
-          return todo.Id === Id
-            ? { ...todo, Status: "NOT STARTED", Update: updateNotStartedDate }
-            : todo;
-        });
-        setTodos(changeNotStartedTodo);
-        // location.reload();
+        //表示するための処理（フロント側）
+        todoDataFromFirebase();
         break;
     }
   };
