@@ -23,6 +23,7 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import {
+  Timestamp,
   collection,
   deleteDoc,
   doc,
@@ -42,9 +43,18 @@ const Top = () => {
   const [todos, setTodos] = useState([]);
   //画面遷移用
   const router = useRouter();
+  //
+  // //Top画面に表示するTodoリストの数
+  // const itemsPerPage = 6;
+
+  // const [itemsOffset, setItemsOffset] = useState(0);
+  // //ページ内の最後にあるTodoが何番目になるか
+  // const endOffset = itemsOffset + itemsPerPage;
+
+  // const currentAlbums = todos.slice(itemsOffset, endOffset);
 
   //firebaseからデータを取得する
-  useEffect(() => {
+  const todoDataFromFirebase = () => {
     const todoData = collection(db, "posts");
     //Updateを基準に降順で取得
     const q = query(todoData, orderBy("Update", "desc"));
@@ -59,6 +69,10 @@ const Top = () => {
       setTodos(getTodoData);
       // console.log(todos)
     });
+  };
+
+  useEffect(() => {
+    todoDataFromFirebase();
   }, []);
 
   //Createページに遷移する関数
@@ -87,18 +101,11 @@ const Top = () => {
     //該当するidのデータのPriorityとUpdateを更新する（バック側）
     updateDoc(doc(db, "posts", Id), {
       Priority: e.target.value,
-      Update: serverTimestamp(),
+      Update: Timestamp.now(),
     });
     // console.log(Id);
-    //該当するidのデータのPriorityとUpdateを更新する（フロント側）
-    const updateDate = format(new Date(), "yyyy-MM-dd HH:mm");
-    const priorityChangeTodo = todos.map((todo) => {
-      return todo.Id === Id
-        ? { ...todo, Priority: e.target.value, Update: updateDate }
-        : todo;
-    });
-    setTodos(priorityChangeTodo);
-    // location.reload();
+    //該当するidのデータのPriorityとUpdateを更新する(フロント側)
+    todoDataFromFirebase();
   };
 
   //Statusボタンを押下時にStatusが変更される
