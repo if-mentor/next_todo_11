@@ -52,22 +52,9 @@ const Top = () => {
       const getTodoData = snapShot.docs.map((doc) => {
         // console.log("documentData", doc.data());
         // console.log("時間", new Date(doc.data().Create.toDate()));
-
-        return {
-          Create: format(
-            new Date(doc.data().Create.toDate()),
-            "yyyy-MM-dd HH:mm"
-          ),
-          Detail: doc.data().Detail,
-          Id: doc.data().Id,
-          Priority: doc.data().Priority,
-          Status: doc.data().Status,
-          Task: doc.data().Task,
-          Update: format(
-            new Date(doc.data().Update.toDate()),
-            "yyyy-MM-dd HH:mm"
-          ),
-        };
+        const { Create, Detail, Id, Priority, Status, Task, Update } =
+          doc.data();
+        return { Create, Detail, Id, Priority, Status, Task, Update };
       });
       setTodos(getTodoData);
       // console.log(todos)
@@ -104,11 +91,14 @@ const Top = () => {
     });
     // console.log(Id);
     //該当するidのデータのPriorityとUpdateを更新する（フロント側）
+    const updateDate = format(new Date(), "yyyy-MM-dd HH:mm");
     const stateChangeTodo = todos.map((todo) => {
-      return todo.Id === Id ? { ...todo, Priority: e.target.value } : todo;
+      return todo.Id === Id
+        ? { ...todo, Priority: e.target.value, Update: updateDate }
+        : todo;
     });
     setTodos(stateChangeTodo);
-    location.reload();
+    // location.reload();
   };
 
   //Statusボタンを押下時にStatusが変更される
@@ -241,10 +231,16 @@ const Top = () => {
                       </Select>
                     </Td>
                     <Td width="12%" p={2}>
-                      {todo.Create}
+                      {format(
+                        new Date(todo.Create.toDate()),
+                        "yyyy-MM-dd HH:mm"
+                      )}
                     </Td>
                     <Td width="12%" p={2}>
-                      {todo.Update}
+                      {format(
+                        new Date(todo.Update.toDate()),
+                        "yyyy-MM-dd HH:mm"
+                      )}
                     </Td>
                     <Td width="12%" p={1}>
                       <IconButton
