@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const unsubscribed = onAuthStateChanged(auth, (user) => {
-      //console.log(user);
+      // console.log(user);
       setUser(user);
       setLoading(false);
     });
@@ -30,13 +30,7 @@ export function AuthProvider({ children }) {
     };
   }, [pathname]);
 
-  if (loading) {
-    return <p>loading...</p>;
-  } else {
-    return (
-      <AuthContext.Provider value={value}>
-        {!loading && children}
-      </AuthContext.Provider>
-    );
+  if (!loading) {
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
   }
 }
