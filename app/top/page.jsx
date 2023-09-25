@@ -63,13 +63,11 @@ const Top = () => {
 
   //Createページに遷移する関数
   const linkToCreate = () => {
-    //useRouterを使用した動的なページネーションの設定
     router.push("/create");
   };
 
   //Editページに遷移する関数
   const linkToEdit = (Id) => {
-    //useRouterを使用した動的なページネーションの設定
     router.push(`/edit/${Id}`);
   };
 
