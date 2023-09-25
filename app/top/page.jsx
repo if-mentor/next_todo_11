@@ -91,41 +91,71 @@ const Top = () => {
     });
     // console.log(Id);
     //該当するidのデータのPriorityとUpdateを更新する（フロント側）
+    const updateDate = format(new Date(), "yyyy-MM-dd HH:mm");
     const priorityChangeTodo = todos.map((todo) => {
-      return todo.Id === Id ? { ...todo, Priority: e.target.value } : todo;
+      return todo.Id === Id
+        ? { ...todo, Priority: e.target.value, Update: updateDate }
+        : todo;
     });
     setTodos(priorityChangeTodo);
-    location.reload();
+    // location.reload();
   };
 
   //Statusボタンを押下時にStatusが変更される
   const onClickStatus = (Id, Status) => {
     //Statusの内容を変更する
-    console.log(Status);
+    // console.log(Status);
     switch (Status) {
       case "NOT STARTED":
+        //NOT STARTED → DOING
         //変更したStatusの内容をFirebaseに更新する
         updateDoc(doc(db, "posts", Id), {
           Status: "DOING",
           Update: serverTimestamp(),
         });
-        location.reload();
+        //該当するidのデータのStatusとUpdateを更新する（フロント側）
+        const updateDoingDate = format(new Date(), "yyyy-MM-dd HH:mm");
+        const changeDoingTodo = todos.map((todo) => {
+          return todo.Id === Id
+            ? { ...todo, Status: "DOING", Update: updateDoingDate }
+            : todo;
+        });
+        setTodos(changeDoingTodo);
+        // location.reload();
         break;
       case "DOING":
+        //DOING → DONE
         //変更したStatusの内容をFirebaseに更新する
+        const updateDoneDate = format(new Date(), "yyyy-MM-dd HH:mm");
         updateDoc(doc(db, "posts", Id), {
           Status: "DONE",
           Update: serverTimestamp(),
         });
-        location.reload();
+        //該当するidのデータのStatusとUpdateを更新する（フロント側）
+        const changeDoneTodo = todos.map((todo) => {
+          return todo.Id === Id
+            ? { ...todo, Status: "DONE", Update: updateDoneDate }
+            : todo;
+        });
+        setTodos(changeDoneTodo);
+        // location.reload();
         break;
       case "DONE":
+        //DONE → NOT STARTED
         //変更したStatusの内容をFirebaseに更新する
         updateDoc(doc(db, "posts", Id), {
           Status: "NOT STARTED",
           Update: serverTimestamp(),
         });
-        location.reload();
+        //該当するidのデータのStatusとUpdateを更新する（フロント側）
+        const updateNotStartedDate = format(new Date(), "yyyy-MM-dd HH:mm");
+        const changeNotStartedTodo = todos.map((todo) => {
+          return todo.Id === Id
+            ? { ...todo, Status: "NOT STARTED", Update: updateNotStartedDate }
+            : todo;
+        });
+        setTodos(changeNotStartedTodo);
+        // location.reload();
         break;
     }
   };
