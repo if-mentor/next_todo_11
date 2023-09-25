@@ -23,6 +23,7 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import {
+  Timestamp,
   collection,
   deleteDoc,
   doc,
@@ -44,7 +45,7 @@ const Top = () => {
   const router = useRouter();
 
   //firebaseからデータを取得する
-  useEffect(() => {
+  const todoDataFromFirebase = () => {
     const todoData = collection(db, "posts");
     //Updateを基準に降順で取得
     const q = query(todoData, orderBy("Update", "desc"));
@@ -59,17 +60,19 @@ const Top = () => {
       setTodos(getTodoData);
       // console.log(todos)
     });
+  };
+
+  useEffect(() => {
+    todoDataFromFirebase();
   }, []);
 
   //Createページに遷移する関数
   const linkToCreate = () => {
-    //useRouterを使用した動的なページネーションの設定
     router.push("/create");
   };
 
   //Editページに遷移する関数
   const linkToEdit = (Id) => {
-    //useRouterを使用した動的なページネーションの設定
     router.push(`/edit/${Id}`);
   };
 
@@ -78,36 +81,19 @@ const Top = () => {
     //firebaseの中のデータを削除する（バック側）
     deleteDoc(doc(db, "posts", Id));
     //表示するための処理（フロント側）
-    const deleteTodo = todos.filter((todo) => todo.Id !== Id);
-    setTodos(deleteTodo);
+    todoDataFromFirebase();
   };
 
   //Priority選択時に動く関数
-  const onChangeSubTodoStatus = (Id, e) => {
+  const onChangeSubTodoPriority = (Id, e) => {
     //該当するidのデータのPriorityとUpdateを更新する（バック側）
     updateDoc(doc(db, "posts", Id), {
       Priority: e.target.value,
-      Update: serverTimestamp(),
+      Update: Timestamp.now(),
     });
-    // console.log(Id);
-    //該当するidのデータのPriorityとUpdateを更新する（フロント側）
-    const updateDate = format(new Date(), "yyyy-MM-dd HH:mm");
-    const stateChangeTodo = todos.map((todo) => {
-      return todo.Id === Id
-        ? { ...todo, Priority: e.target.value, Update: updateDate }
-        : todo;
-    });
-    setTodos(stateChangeTodo);
-    // location.reload();
+    //表示するための処理（フロント側）
+    todoDataFromFirebase();
   };
-
-  //Statusボタンを押下時にStatusが変更される
-  // const onClickChangeStatus = (Id) => {
-  //   //statusの配列を作る
-  //   const status = ["NOT STARTED", "DOING", "DONE"];
-  //   //statusの配列を順番に回す(if文を使う簡単書く量は増える、配列012を使ってfilterかmap関数で回す時の条件statusと配列の内容が一致したら要素が入ってくるlengthを使うとできる、)
-  //   //順番に回したstatusの配列の内容をupdateDocで更新する
-  // };
 
   return (
     <>
@@ -213,8 +199,6 @@ const Top = () => {
                         bgColor="green.100"
                         rounded="full"
                         textAlign="center"
-                        // id="btn"
-                        // onClick={() => onClickChangeStatus(todo.Id)}
                       >
                         {todo.Status}
                       </Button>
@@ -223,7 +207,7 @@ const Top = () => {
                       <Select
                         size="sm"
                         value={todo.Priority}
-                        onChange={(e) => onChangeSubTodoStatus(todo.Id, e)}
+                        onChange={(e) => onChangeSubTodoPriority(todo.Id, e)}
                       >
                         <option value="High">High</option>
                         <option value="Middle">Middle</option>
