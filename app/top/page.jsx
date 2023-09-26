@@ -104,20 +104,21 @@ const Top = () => {
   // 優先度に基づいてデータをフィルタリング
   // 状態と優先度の両方に基づいてデータをフィルタリング
   const filteredTodos = todos.filter((todo) => {
-    if (selectedStatus === "" && selectedPriority === "") {
-     // どちらも選択されていない場合、すべてのタスクを表示
-      return true;
-    } else if (selectedStatus === "" && selectedPriority !== "") {
-    // 状態が選択されておらず、優先度が選択されている場合
-      return todo.Priority === selectedPriority;
-    } else if (selectedStatus !== "" && selectedPriority === "") {
-    // 状態が選択されており、優先度が選択されていない場合
-      return todo.Status === selectedStatus;
-    } else {
-    // 両方が選択されている場合
-      return todo.Status === selectedStatus && todo.Priority === selectedPriority;
+    switch (true) {
+      // どちらも選択されていない場合、すべてのタスクを表示
+      case selectedStatus === "" && selectedPriority === "":
+        return true;
+      // 状態が選択されておらず、優先度が選択されている場合
+      case selectedStatus === "" && selectedPriority !== "":
+        return todo.Priority === selectedPriority;
+      // 状態が選択されており、優先度が選択されていない場合
+      case selectedStatus !== "" && selectedPriority === "":
+        return todo.Status === selectedStatus;
+      // 両方が選択されている場合
+      default:
+        return todo.Status === selectedStatus && todo.Priority === selectedPriority;
     }
-  });
+  });  
 
   //Resetボタン押下時に初期値にリセット
   const handleReset = () => {
