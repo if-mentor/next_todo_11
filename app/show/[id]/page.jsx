@@ -33,6 +33,7 @@ import db from "../../../firebase";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { dateFormat } from "../../../utils/dateFormat";
 
 const Show = () => {
   // id
@@ -57,13 +58,15 @@ const Show = () => {
       const todoDocObj = querySnapshot.docs[0];
       if (todoDocObj) {
         const data = todoDocObj.data();
-        const formattedCreate = format(data.Create.toDate(), "yyyy-MM-dd HH:mm");
-        const formattedUpdate = format(data.Update.toDate(), "yyyy-MM-dd HH:mm");
+        // const formattedCreate = format(data.Create.toDate(), "yyyy-MM-dd HH:mm");
+        // const formattedUpdate = format(data.Update.toDate(), "yyyy-MM-dd HH:mm");
         setTodos({
-          Create: formattedCreate,
+          Create: dateFormat(data.Create),
+          // formattedCreate,
           Detail: data.Detail,
           Task: data.Task,
-          Update: formattedUpdate,
+          Update: dateFormat(data.Update),
+          // formattedUpdate,
         });
       }
     } catch (error) {
@@ -78,14 +81,21 @@ const Show = () => {
   const fetchComment = async () => {
     try {
       const cmtCol = collection(db, "comments");
-      const cmtQueryRef = query(cmtCol, where("Id", "==", id), orderBy("commentCreate", "desc"));
+      const cmtQueryRef = query(
+        cmtCol,
+        where("Id", "==", id),
+        orderBy("commentCreate", "desc")
+      );
       getDocs(cmtQueryRef).then((cmtSnapShot) => {
         const cmtObj = cmtSnapShot.docs.map((doc) => {
           return {
             commentId: doc.data().commentId,
             commentName: doc.data().commentName,
             commentDetail: doc.data().commentDetail,
-            commentCreate: format(doc.data().commentCreate.toDate(), "yyyy-MM-dd HH:mm"),
+            commentCreate: format(
+              doc.data().commentCreate.toDate(),
+              "yyyy-MM-dd HH:mm"
+            ),
           };
         });
         setComments(cmtObj);
@@ -151,7 +161,14 @@ const Show = () => {
 
         {/* Todoリスト部分 */}
         <Flex align="flex-start">
-          <Box w="55%" border="1px" borderColor="gray" p={2} mr="20px" borderRadius="10px">
+          <Box
+            w="55%"
+            border="1px"
+            borderColor="gray"
+            p={2}
+            mr="20px"
+            borderRadius="10px"
+          >
             <Box bg="#68D391">
               <Text as="b">TITLE</Text>
             </Box>
