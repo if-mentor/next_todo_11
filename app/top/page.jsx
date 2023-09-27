@@ -35,7 +35,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import db from "../../firebase";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import Link from "next/link";
 import ReactPaginate from "react-paginate";
 import page from "./page.css";
@@ -85,13 +85,11 @@ const Top = () => {
 
   //Createページに遷移する関数
   const linkToCreate = () => {
-    //useRouterを使用した動的なページネーションの設定
     router.push("/create");
   };
 
   //Editページに遷移する関数
   const linkToEdit = (Id) => {
-    //useRouterを使用した動的なページネーションの設定
     router.push(`/edit/${Id}`);
   };
 
@@ -244,7 +242,7 @@ const Top = () => {
 
         {/* Todoリスト */}
         <Box>
-          <TableContainer variant="simple">
+          <TableContainer variant="simple" height="335px">
             <Table>
               <Thead bgColor="green.300">
                 {/* Todoリストのタイトル */}
@@ -362,28 +360,32 @@ const Top = () => {
             </Table>
           </TableContainer>
           {/* Todoリスト */}
-          {/* TODO: ページネーション機能挿入予定 */}
-          <Box display="flex" justifyContent="center">
-            <ReactPaginate
-              pageCount={pageCount}
-              onPageChange={handlePageClick}
-              pageRangeDisplayed={1}
-              marginPagesDisplayed={2}
-              previousLabel="<"
-              nextLabel=">"
-              pageClassName="page-item"
-              previousClassName="page-item"
-              previousLinkClassName="page-link-gray"
-              nextClassName="page-item"
-              nextLinkClassName="page-link-gray"
-              breakLabel="..."
-              breakClassName="page-item"
-              containerClassName="pagination"
-              activeClassName="active"
-            />
-          </Box>
-          {/* TODO: ページネーション機能挿入予定 */}
         </Box>
+        {/* ページネーション機能 */}
+        <Box
+          display="flex"
+          justifyContent="center"
+          // style={{ position: "fixed", left: "100px" }}
+        >
+          <ReactPaginate
+            pageCount={pageCount}
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={1}
+            marginPagesDisplayed={2}
+            previousLabel="<"
+            nextLabel=">"
+            pageClassName="page-item"
+            previousClassName="page-item"
+            previousLinkClassName="page-link-gray"
+            nextClassName="page-item"
+            nextLinkClassName="page-link-gray"
+            breakLabel="..."
+            breakClassName="page-item"
+            containerClassName="pagination"
+            activeClassName="active"
+          />
+        </Box>
+        {/* ページネーション機能 */}
       </Box>
       {/* 中身 */}
     </>
