@@ -23,12 +23,15 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import {
+  Timestamp,
   collection,
   deleteDoc,
   doc,
   getDocs,
   orderBy,
   query,
+  serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import db from "../../firebase";
@@ -42,45 +45,34 @@ const Top = () => {
   const router = useRouter();
 
   //firebaseからデータを取得する
-  useEffect(() => {
+  const todoDataFromFirebase = () => {
     const todoData = collection(db, "posts");
     //Updateを基準に降順で取得
     const q = query(todoData, orderBy("Update", "desc"));
     getDocs(q).then((snapShot) => {
       const getTodoData = snapShot.docs.map((doc) => {
-        console.log("documentData", doc.data());
-        console.log("時間", new Date(doc.data().Create.toDate()));
-
-        return {
-          Create: format(
-            new Date(doc.data().Create.toDate()),
-            "yyyy-MM-dd HH:mm"
-          ),
-          Detail: doc.data().Detail,
-          Id: doc.data().Id,
-          Priority: doc.data().Priority,
-          Status: doc.data().Status,
-          Task: doc.data().Task,
-          Update: format(
-            new Date(doc.data().Update.toDate()),
-            "yyyy-MM-dd HH:mm"
-          ),
-        };
+        // console.log("documentData", doc.data());
+        // console.log("時間", new Date(doc.data().Create.toDate()));
+        const { Create, Detail, Id, Priority, Status, Task, Update } =
+          doc.data();
+        return { Create, Detail, Id, Priority, Status, Task, Update };
       });
       setTodos(getTodoData);
       // console.log(todos)
     });
+  };
+
+  useEffect(() => {
+    todoDataFromFirebase();
   }, []);
 
   //Createページに遷移する関数
   const linkToCreate = () => {
-    //useRouterを使用した動的なページネーションの設定
     router.push("/create");
   };
 
   //Editページに遷移する関数
   const linkToEdit = (Id) => {
-    //useRouterを使用した動的なページネーションの設定
     router.push(`/edit/${Id}`);
   };
 
@@ -89,8 +81,18 @@ const Top = () => {
     //firebaseの中のデータを削除する（バック側）
     deleteDoc(doc(db, "posts", Id));
     //表示するための処理（フロント側）
-    const deleteTodo = todos.filter((todo) => todo.Id !== Id);
-    setTodos(deleteTodo);
+    todoDataFromFirebase();
+  };
+
+  //Priority選択時に動く関数
+  const onChangeSubTodoPriority = (Id, e) => {
+    //該当するidのデータのPriorityとUpdateを更新する（バック側）
+    updateDoc(doc(db, "posts", Id), {
+      Priority: e.target.value,
+      Update: Timestamp.now(),
+    });
+    //表示するための処理（フロント側）
+    todoDataFromFirebase();
   };
 
   return (
@@ -192,25 +194,37 @@ const Top = () => {
                     <Td width="12%" p={1}>
                       <Button
                         p={2}
+                        width={100}
+                        fontSize={4}
                         bgColor="green.100"
                         rounded="full"
                         textAlign="center"
                       >
-                        DOING
+                        {todo.Status}
                       </Button>
                     </Td>
                     <Td width="12%" p={1}>
-                      <Select size="sm">
-                        <option value="High">high</option>
-                        <option value="Middle">middle</option>
-                        <option value="Low">low</option>
+                      <Select
+                        size="sm"
+                        value={todo.Priority}
+                        onChange={(e) => onChangeSubTodoPriority(todo.Id, e)}
+                      >
+                        <option value="High">High</option>
+                        <option value="Middle">Middle</option>
+                        <option value="Low">Low</option>
                       </Select>
                     </Td>
                     <Td width="12%" p={2}>
-                      {todo.Create}
+                      {format(
+                        new Date(todo.Create.toDate()),
+                        "yyyy-MM-dd HH:mm"
+                      )}
                     </Td>
                     <Td width="12%" p={2}>
-                      {todo.Update}
+                      {format(
+                        new Date(todo.Update.toDate()),
+                        "yyyy-MM-dd HH:mm"
+                      )}
                     </Td>
                     <Td width="12%" p={1}>
                       <IconButton
