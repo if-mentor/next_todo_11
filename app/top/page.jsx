@@ -38,7 +38,7 @@ import db from "../../firebase";
 import { format, set } from "date-fns";
 import Link from "next/link";
 import ReactPaginate from "react-paginate";
-// import page from "./page.css";
+import page from "./page.css";
 
 const Top = () => {
   //状態
@@ -363,28 +363,23 @@ const Top = () => {
           </TableContainer>
           {/* Todoリスト */}
           {/* TODO: ページネーション機能挿入予定 */}
-          <Box m={3} display="flex" justifyContent="center">
+          <Box display="flex" justifyContent="center">
             <ReactPaginate
               pageCount={pageCount}
               onPageChange={handlePageClick}
-              pageRangeDisplayed={3}
+              pageRangeDisplayed={1}
               marginPagesDisplayed={2}
               previousLabel="<"
               nextLabel=">"
               pageClassName="page-item"
-              pageLinkClassName="page-link"
               previousClassName="page-item"
-              previousLinkClassName="page-link"
+              previousLinkClassName="page-link-gray"
               nextClassName="page-item"
-              nextLinkClassName="page-link"
+              nextLinkClassName="page-link-gray"
               breakLabel="..."
               breakClassName="page-item"
-              breakLinkClassName="page-link"
               containerClassName="pagination"
               activeClassName="active"
-              // style={{ page }}
-              // style={{ color: "blue" }}
-              color="blue"
             />
           </Box>
           {/* TODO: ページネーション機能挿入予定 */}
