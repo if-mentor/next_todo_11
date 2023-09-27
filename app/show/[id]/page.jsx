@@ -30,7 +30,6 @@ import {
   orderBy,
 } from "firebase/firestore";
 import db from "../../../firebase";
-import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { dateFormat } from "../../../utils/dateFormat";
@@ -58,15 +57,11 @@ const Show = () => {
       const todoDocObj = querySnapshot.docs[0];
       if (todoDocObj) {
         const data = todoDocObj.data();
-        // const formattedCreate = format(data.Create.toDate(), "yyyy-MM-dd HH:mm");
-        // const formattedUpdate = format(data.Update.toDate(), "yyyy-MM-dd HH:mm");
         setTodos({
           Create: dateFormat(data.Create),
-          // formattedCreate,
           Detail: data.Detail,
           Task: data.Task,
           Update: dateFormat(data.Update),
-          // formattedUpdate,
         });
       }
     } catch (error) {
@@ -92,10 +87,7 @@ const Show = () => {
             commentId: doc.data().commentId,
             commentName: doc.data().commentName,
             commentDetail: doc.data().commentDetail,
-            commentCreate: format(
-              doc.data().commentCreate.toDate(),
-              "yyyy-MM-dd HH:mm"
-            ),
+            commentCreate: dateFormat(doc.data().commentCreate),
           };
         });
         setComments(cmtObj);

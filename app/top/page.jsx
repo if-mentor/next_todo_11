@@ -32,8 +32,8 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import db from "../../firebase";
-import { format } from "date-fns";
 import Link from "next/link";
+import { dateFormat } from "../../utils/dateFormat";
 
 const Top = () => {
   //状態
@@ -48,23 +48,16 @@ const Top = () => {
     const q = query(todoData, orderBy("Update", "desc"));
     getDocs(q).then((snapShot) => {
       const getTodoData = snapShot.docs.map((doc) => {
-        console.log("documentData", doc.data());
-        console.log("時間", new Date(doc.data().Create.toDate()));
-
+        const { Create, Detail, Id, Pruority, Status, Task, Update } =
+          doc.data();
         return {
-          Create: format(
-            new Date(doc.data().Create.toDate()),
-            "yyyy-MM-dd HH:mm"
-          ),
-          Detail: doc.data().Detail,
-          Id: doc.data().Id,
-          Priority: doc.data().Priority,
-          Status: doc.data().Status,
-          Task: doc.data().Task,
-          Update: format(
-            new Date(doc.data().Update.toDate()),
-            "yyyy-MM-dd HH:mm"
-          ),
+          Create: dateFormat(Create),
+          Detail,
+          Id,
+          Pruority,
+          Status,
+          Task,
+          Update: dateFormat(Update),
         };
       });
       setTodos(getTodoData);
@@ -74,13 +67,11 @@ const Top = () => {
 
   //Createページに遷移する関数
   const linkToCreate = () => {
-    //useRouterを使用した動的なページネーションの設定
     router.push("/create");
   };
 
   //Editページに遷移する関数
   const linkToEdit = (Id) => {
-    //useRouterを使用した動的なページネーションの設定
     router.push(`/edit/${Id}`);
   };
 
