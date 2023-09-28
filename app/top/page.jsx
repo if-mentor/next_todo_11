@@ -30,7 +30,6 @@ import {
   getDocs,
   orderBy,
   query,
-  serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -95,13 +94,9 @@ const Top = () => {
     //表示するための処理（フロント側）
     todoDataFromFirebase();
   };
-  console.log(todos);
   //Statusボタンを押下時にStatusが変更される
-  //test49のStatusとIdが入る
   const onClickStatus = async (Id, Status) => {
     //Statusの内容を変更する
-    //DOINGが出る
-    console.log("1", Status);
     switch (Status) {
       case "NOT STARTED": //NOT STARTED → DOING
         //変更したStatusの内容をFirebaseに更新する
@@ -109,7 +104,6 @@ const Top = () => {
           Status: "DOING",
           Update: Timestamp.now(),
         });
-        console.log(Status);
         //表示するための処理（フロント側）
         todoDataFromFirebase();
         break;
@@ -119,10 +113,7 @@ const Top = () => {
           Status: "DONE",
           Update: Timestamp.now(),
         });
-        //DOING出る
-        console.log("2", Status);
         //表示するための処理（フロント側）
-        //DONEのデータをとってきている
         todoDataFromFirebase();
         break;
       case "DONE": //DONE → NOT STARTED
@@ -131,7 +122,6 @@ const Top = () => {
           Status: "NOT STARTED",
           Update: Timestamp.now(),
         });
-        console.log(Status);
         //表示するための処理（フロント側）
         todoDataFromFirebase();
         break;
