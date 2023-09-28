@@ -47,7 +47,7 @@ const Top = () => {
   const router = useRouter();
   //Top画面に表示するTodoリストの数
   const itemsPerPage = 6;
-
+  //ページ数の状態
   const [itemsOffset, setItemsOffset] = useState(0);
   //ページ内の最後にあるTodoが何番目になるか
   const endOffset = itemsOffset + itemsPerPage;
@@ -81,6 +81,7 @@ const Top = () => {
   };
 
   useEffect(() => {
+    //Firebaseからデータをとってくる
     todoDataFromFirebase();
   }, []);
 
@@ -375,7 +376,7 @@ const Top = () => {
             previousLinkClassName="page-item-nextPrevious"
             nextLinkClassName="page-item-nextPrevious"
             breakLabel="..."
-            breakLinkClassName="page-item"
+            breakLinkClassName="page-item-disablebutton"
             containerClassName="pagination"
             activeLinkClassName="active"
           />
