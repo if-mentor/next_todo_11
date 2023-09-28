@@ -57,6 +57,7 @@ const Top = () => {
           doc.data();
         return { Create, Detail, Id, Priority, Status, Task, Update };
       });
+      //DONEが出る
       setTodos(getTodoData);
       // console.log(todos)
     });
@@ -94,15 +95,17 @@ const Top = () => {
     //表示するための処理（フロント側）
     todoDataFromFirebase();
   };
-
+  console.log(todos);
   //Statusボタンを押下時にStatusが変更される
-  const onClickStatus = (Id, Status) => {
+  //test49のStatusとIdが入る
+  const onClickStatus = async (Id, Status) => {
     //Statusの内容を変更する
-    console.log(Status);
+    //DOINGが出る
+    console.log("1", Status);
     switch (Status) {
       case "NOT STARTED": //NOT STARTED → DOING
         //変更したStatusの内容をFirebaseに更新する
-        updateDoc(doc(db, "posts", Id), {
+        await updateDoc(doc(db, "posts", Id), {
           Status: "DOING",
           Update: Timestamp.now(),
         });
@@ -112,17 +115,19 @@ const Top = () => {
         break;
       case "DOING": //DOING → DONE
         //変更したStatusの内容をFirebaseに更新する
-        updateDoc(doc(db, "posts", Id), {
+        await updateDoc(doc(db, "posts", Id), {
           Status: "DONE",
           Update: Timestamp.now(),
         });
-        console.log(Status);
+        //DOING出る
+        console.log("2", Status);
         //表示するための処理（フロント側）
+        //DONEのデータをとってきている
         todoDataFromFirebase();
         break;
       case "DONE": //DONE → NOT STARTED
         //変更したStatusの内容をFirebaseに更新する
-        updateDoc(doc(db, "posts", Id), {
+        await updateDoc(doc(db, "posts", Id), {
           Status: "NOT STARTED",
           Update: Timestamp.now(),
         });
@@ -230,7 +235,7 @@ const Top = () => {
                       </Link>
                     </Td>
                     <Td width="12%" p={1}>
-                      {todo.Status === "NOT STARTED" ? (
+                      {todo.Status === "NOT STARTED" && (
                         <Button
                           p={2}
                           width={100}
@@ -242,7 +247,8 @@ const Top = () => {
                         >
                           {todo.Status}
                         </Button>
-                      ) : todo.Status === "DOING" ? (
+                      )}
+                      {todo.Status === "DOING" && (
                         <Button
                           p={2}
                           width={100}
@@ -254,7 +260,8 @@ const Top = () => {
                         >
                           {todo.Status}
                         </Button>
-                      ) : (
+                      )}
+                      {todo.Status === "DONE" && (
                         <Button
                           p={2}
                           width={100}
