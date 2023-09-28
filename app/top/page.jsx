@@ -98,7 +98,7 @@ const Top = () => {
   //Statusボタンを押下時にStatusが変更される
   const onClickStatus = (Id, Status) => {
     //Statusの内容を変更する
-    // console.log(Status);
+    console.log(Status);
     switch (Status) {
       case "NOT STARTED": //NOT STARTED → DOING
         //変更したStatusの内容をFirebaseに更新する
@@ -106,16 +106,17 @@ const Top = () => {
           Status: "DOING",
           Update: Timestamp.now(),
         });
+        console.log(Status);
         //表示するための処理（フロント側）
         todoDataFromFirebase();
         break;
       case "DOING": //DOING → DONE
         //変更したStatusの内容をFirebaseに更新する
-        const updateDoneDate = format(new Date(), "yyyy-MM-dd HH:mm");
         updateDoc(doc(db, "posts", Id), {
           Status: "DONE",
           Update: Timestamp.now(),
         });
+        console.log(Status);
         //表示するための処理（フロント側）
         todoDataFromFirebase();
         break;
@@ -125,6 +126,7 @@ const Top = () => {
           Status: "NOT STARTED",
           Update: Timestamp.now(),
         });
+        console.log(Status);
         //表示するための処理（フロント側）
         todoDataFromFirebase();
         break;
@@ -236,7 +238,6 @@ const Top = () => {
                           bgColor="green.50"
                           rounded="full"
                           textAlign="center"
-                          // id="btn"
                           onClick={() => onClickStatus(todo.Id, todo.Status)}
                         >
                           {todo.Status}
@@ -249,7 +250,6 @@ const Top = () => {
                           bgColor="green.200"
                           rounded="full"
                           textAlign="center"
-                          // id="btn"
                           onClick={() => onClickStatus(todo.Id, todo.Status)}
                         >
                           {todo.Status}
@@ -262,7 +262,6 @@ const Top = () => {
                           bgColor="green.500"
                           rounded="full"
                           textAlign="center"
-                          // id="btn"
                           onClick={() => onClickStatus(todo.Id, todo.Status)}
                         >
                           {todo.Status}
