@@ -55,6 +55,7 @@ const Top = () => {
   const currentAlbums = todos.slice(itemsOffset, endOffset);
   const pageCount = Math.ceil(todos.length / itemsPerPage);
 
+  //ページネーションのための関数
   const handlePageClick = (e) => {
     // console.log(e.selected);
     const newOffset = (e.selected * itemsPerPage) % todos.length;
@@ -362,27 +363,21 @@ const Top = () => {
           {/* Todoリスト */}
         </Box>
         {/* ページネーション機能 */}
-        <Box
-          display="flex"
-          justifyContent="center"
-          // style={{ position: "fixed", left: "100px" }}
-        >
+        <Box display="flex" justifyContent="center">
           <ReactPaginate
             pageCount={pageCount}
             onPageChange={handlePageClick}
             pageRangeDisplayed={1}
-            marginPagesDisplayed={2}
+            marginPagesDisplayed={1}
             previousLabel="<"
             nextLabel=">"
-            pageClassName="page-item"
-            previousClassName="page-item"
-            previousLinkClassName="page-link-gray"
-            nextClassName="page-item"
-            nextLinkClassName="page-link-gray"
+            pageLinkClassName="page-item"
+            previousLinkClassName="page-item-nextPrevious"
+            nextLinkClassName="page-item-nextPrevious"
             breakLabel="..."
-            breakClassName="page-item"
+            breakLinkClassName="page-item"
             containerClassName="pagination"
-            activeClassName="active"
+            activeLinkClassName="active"
           />
         </Box>
         {/* ページネーション機能 */}
