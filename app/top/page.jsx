@@ -85,9 +85,9 @@ const Top = () => {
   };
 
   //Priority選択時に動く関数
-  const onChangeSubTodoPriority = (Id, e) => {
+  const onChangeSubTodoPriority = async (Id, e) => {
     //該当するidのデータのPriorityとUpdateを更新する（バック側）
-    updateDoc(doc(db, "posts", Id), {
+    await updateDoc(doc(db, "posts", Id), {
       Priority: e.target.value,
       Update: Timestamp.now(),
     });
