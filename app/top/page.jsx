@@ -34,8 +34,8 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import db from "../../firebase";
-import { format } from "date-fns";
 import Link from "next/link";
+import { dateFormat } from "../../utils/dateFormat";
 
 const Top = () => {
   //状態
@@ -50,11 +50,17 @@ const Top = () => {
     const q = query(todoData, orderBy("Update", "desc"));
     await getDocs(q).then((snapShot) => {
       const getTodoData = snapShot.docs.map((doc) => {
-        // console.log("documentData", doc.data());
-        // console.log("時間", new Date(doc.data().Create.toDate()));
         const { Create, Detail, Id, Priority, Status, Task, Update } =
           doc.data();
-        return { Create, Detail, Id, Priority, Status, Task, Update };
+        return {
+          Create: dateFormat(Create),
+          Detail,
+          Id,
+          Priority,
+          Status,
+          Task,
+          Update: dateFormat(Update),
+        };
       });
       setTodos(getTodoData);
       // console.log(todos)
@@ -276,16 +282,10 @@ const Top = () => {
                       </Select>
                     </Td>
                     <Td width="12%" p={2}>
-                      {format(
-                        new Date(todo.Create.toDate()),
-                        "yyyy-MM-dd HH:mm"
-                      )}
+                      {todo.Create}
                     </Td>
                     <Td width="12%" p={2}>
-                      {format(
-                        new Date(todo.Update.toDate()),
-                        "yyyy-MM-dd HH:mm"
-                      )}
+                      {todo.Update}
                     </Td>
                     <Td width="12%" p={1}>
                       <IconButton

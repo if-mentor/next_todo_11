@@ -14,8 +14,8 @@ import { BackButton } from "../../components/button/BackButton";
 import { useEffect, useState } from "react";
 import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import db from "../../../firebase";
-import { format } from "date-fns";
 import { useRouter } from "next/navigation";
+import { dateFormat } from "../../../utils/dateFormat";
 
 export default function Edit({ params }) {
   const router = useRouter();
@@ -34,8 +34,8 @@ export default function Edit({ params }) {
       setTodo({
         Task: data.Task,
         Detail: data.Detail,
-        Create: format(new Date(data.Create.toDate()), "yyyy-MM-dd HH:mm"),
-        Update: format(new Date(data.Update.toDate()), "yyyy-MM-dd HH:mm"),
+        Create: dateFormat(data.Create),
+        Update: dateFormat(data.Update),
       });
     } catch (error) {
       console.log(error);
