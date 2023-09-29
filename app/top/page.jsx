@@ -46,11 +46,12 @@ const Top = () => {
   const [selectedPriority, setSelectedPriority] = useState("");
   // Status検索用
   const [selectedStatus, setSelectedStatus] = useState("");
+  //画面遷移用
+  const router = useRouter();
+
   // 検索用ボタンを空に設定
   const initialPriority = "";
   const initialStatus = "";
-  //画面遷移用
-  const router = useRouter();
 
   //firebaseからデータを取得する
   const todoDataFromFirebase = async () => {
@@ -72,7 +73,6 @@ const Top = () => {
         };
       });
       setTodos(getTodoData);
-      // console.log(todos)
     });
   };
 
@@ -109,7 +109,7 @@ const Top = () => {
     //表示するための処理（フロント側）
     todoDataFromFirebase();
   };
-  //Statusボタンを押下時にStatusが変更される
+  //Statusボタンを押下時に動く関数
   const onClickStatus = async (Id, Status) => {
     //Statusの内容を変更する
     switch (Status) {
@@ -299,7 +299,7 @@ const Top = () => {
                         </Link>
                       </Td>
                       <Td width="12%" p={1}>
-                        {todo.Status === "NOT STARTED" ? (
+                        {todo.Status === "NOT STARTED" && (
                           <Button
                             p={2}
                             width={100}
@@ -307,12 +307,12 @@ const Top = () => {
                             bgColor="green.50"
                             rounded="full"
                             textAlign="center"
-                            // id="btn"
                             onClick={() => onClickStatus(todo.Id, todo.Status)}
                           >
                             {todo.Status}
                           </Button>
-                        ) : todo.Status === "DOING" ? (
+                        )}
+                        {todo.Status === "DOING" && (
                           <Button
                             p={2}
                             width={100}
@@ -320,12 +320,12 @@ const Top = () => {
                             bgColor="green.200"
                             rounded="full"
                             textAlign="center"
-                            // id="btn"
                             onClick={() => onClickStatus(todo.Id, todo.Status)}
                           >
                             {todo.Status}
                           </Button>
-                        ) : (
+                        )}
+                        {todo.Status === "DONE" && (
                           <Button
                             p={2}
                             width={100}
@@ -333,7 +333,6 @@ const Top = () => {
                             bgColor="green.500"
                             rounded="full"
                             textAlign="center"
-                            // id="btn"
                             onClick={() => onClickStatus(todo.Id, todo.Status)}
                           >
                             {todo.Status}
