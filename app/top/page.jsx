@@ -44,11 +44,11 @@ const Top = () => {
   const router = useRouter();
 
   //firebaseからデータを取得する
-  const todoDataFromFirebase = () => {
+  const todoDataFromFirebase = async () => {
     const todoData = collection(db, "posts");
     //Updateを基準に降順で取得
     const q = query(todoData, orderBy("Update", "desc"));
-    getDocs(q).then((snapShot) => {
+    await getDocs(q).then((snapShot) => {
       const getTodoData = snapShot.docs.map((doc) => {
         // console.log("documentData", doc.data());
         // console.log("時間", new Date(doc.data().Create.toDate()));
@@ -56,7 +56,6 @@ const Top = () => {
           doc.data();
         return { Create, Detail, Id, Priority, Status, Task, Update };
       });
-      //DONEが出る
       setTodos(getTodoData);
       // console.log(todos)
     });
@@ -77,9 +76,9 @@ const Top = () => {
   };
 
   //Deleteボタン押下時に動く関数
-  const DeleteTodo = (Id) => {
+  const DeleteTodo = async (Id) => {
     //firebaseの中のデータを削除する（バック側）
-    deleteDoc(doc(db, "posts", Id));
+    await deleteDoc(doc(db, "posts", Id));
     //表示するための処理（フロント側）
     todoDataFromFirebase();
   };
