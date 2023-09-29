@@ -35,21 +35,23 @@ import {
 import { useEffect, useState } from "react";
 import db from "../../firebase";
 import Link from "next/link";
+import ReactPaginate from "react-paginate";
+import page from "./page.css";
 import { dateFormat } from "../../utils/dateFormat";
 
 const Top = () => {
   //状態
   const [todos, setTodos] = useState([]);
-  //画面遷移用
-  const router = useRouter();
   //Priority検索用
   const [selectedPriority, setSelectedPriority] = useState("");
   // Status検索用
   const [selectedStatus, setSelectedStatus] = useState("");
+  //画面遷移用
+  const router = useRouter();
+
   // 検索用ボタンを空に設定
   const initialPriority = "";
   const initialStatus = "";
-
 
   //firebaseからデータを取得する
   const todoDataFromFirebase = async () => {
@@ -71,11 +73,11 @@ const Top = () => {
         };
       });
       setTodos(getTodoData);
-      // console.log(todos)
     });
   };
 
   useEffect(() => {
+    //Firebaseからデータをとってくる
     todoDataFromFirebase();
   }, []);
 
@@ -107,7 +109,7 @@ const Top = () => {
     //表示するための処理（フロント側）
     todoDataFromFirebase();
   };
-  //Statusボタンを押下時にStatusが変更される
+  //Statusボタンを押下時に動く関数
   const onClickStatus = async (Id, Status) => {
     //Statusの内容を変更する
     switch (Status) {
@@ -156,14 +158,32 @@ const Top = () => {
         return todo.Status === selectedStatus;
       // 両方が選択されている場合
       default:
-        return todo.Status === selectedStatus && todo.Priority === selectedPriority;
+        return (
+          todo.Status === selectedStatus && todo.Priority === selectedPriority
+        );
     }
-  });  
+  });
 
   //Resetボタン押下時に初期値にリセット
   const handleReset = () => {
     setSelectedPriority(initialPriority);
-    setSelectedStatus(initialStatus); 
+    setSelectedStatus(initialStatus);
+  };
+
+  //Top画面に表示するTodoリストの数
+  const itemsPerPage = 6;
+  //ページ数の状態
+  const [itemsOffset, setItemsOffset] = useState(0);
+  //ページ内の最後にあるTodoが何番目になるか
+  const endOffset = itemsOffset + itemsPerPage;
+
+  const currentAlbums = filteredTodos.slice(itemsOffset, endOffset);
+  const pageCount = Math.ceil(filteredTodos.length / itemsPerPage);
+
+  //ページネーションのための関数
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * itemsPerPage) % filteredTodos.length;
+    setItemsOffset(newOffset);
   };
 
   return (
@@ -188,11 +208,11 @@ const Top = () => {
             {/* STATUS部分 */}
             <FormControl>
               <FormLabel>STATUS</FormLabel>
-              <Select 
-              placeholder="---------" 
-              size="sm"
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
+              <Select
+                placeholder="---------"
+                size="sm"
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
               >
                 <option value="NOT STARTED">NOT STARTED</option>
                 <option value="DOING">DOING</option>
@@ -204,11 +224,11 @@ const Top = () => {
             {/* PRIORITY部分 */}
             <FormControl>
               <FormLabel>PRIORITY</FormLabel>
-              <Select 
-              placeholder="---------" 
-              size="sm"
-              value={selectedPriority}
-              onChange={(e) => setSelectedPriority(e.target.value)}
+              <Select
+                placeholder="---------"
+                size="sm"
+                value={selectedPriority}
+                onChange={(e) => setSelectedPriority(e.target.value)}
               >
                 <option value="High">High</option>
                 <option value="Middle">Middle</option>
@@ -219,11 +239,11 @@ const Top = () => {
 
             {/* RESETボタン */}
             <Box>
-              <Button 
-              variant="outline" 
-              colorScheme="gray" 
-              rounded="full"
-              onClick={handleReset}
+              <Button
+                variant="outline"
+                colorScheme="gray"
+                rounded="full"
+                onClick={handleReset}
               >
                 RESET
               </Button>
@@ -250,120 +270,138 @@ const Top = () => {
         </HStack>
 
         {/* Todoリスト */}
-        <TableContainer>
-          <Table variant="simple">
-            <Thead bgColor="green.300">
-              {/* Todoリストのタイトル */}
-              <Tr>
-                <Th width="40%">Task</Th>
-                <Th width="12%">Status</Th>
-                <Th width="12%">Priority</Th>
-                <Th width="12%">Create</Th>
-                <Th width="12%">Update</Th>
-                <Th width="12%">Action</Th>
-              </Tr>
-              {/* Todoリストのタイトル */}
-            </Thead>
-
-            {/* Todoリスト */}
-            <Tbody>
-              {filteredTodos.map((todo) =>{
-                return(
-                  <Tr key={todo.Id}>
-                    <Td width="40%" p={1}>
-                      <Link
-                        href={`/show/${todo.Id}`}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {todo.Task}
-                      </Link>
-                    </Td>
-                    <Td width="12%" p={1}>
-                      {todo.Status === "NOT STARTED" && (
-                        <Button
-                          p={2}
-                          width={100}
-                          fontSize={4}
-                          bgColor="green.50"
-                          rounded="full"
-                          textAlign="center"
-                          onClick={() => onClickStatus(todo.Id, todo.Status)}
+        <Box>
+          <TableContainer variant="simple" height="335px">
+            <Table>
+              <Thead bgColor="green.300">
+                {/* Todoリストのタイトル */}
+                <Tr>
+                  <Th width="40%">Task</Th>
+                  <Th width="12%">Status</Th>
+                  <Th width="12%">Priority</Th>
+                  <Th width="12%">Create</Th>
+                  <Th width="12%">Update</Th>
+                  <Th width="12%">Action</Th>
+                </Tr>
+                {/* Todoリストのタイトル */}
+              </Thead>
+              {/* Todo */}
+              <Tbody>
+                {currentAlbums.map((todo) => {
+                  return (
+                    <Tr key={todo.Id}>
+                      <Td width="40%" p={1}>
+                        <Link
+                          href={`/show/${todo.Id}`}
+                          style={{ cursor: "pointer" }}
                         >
-                          {todo.Status}
-                        </Button>
-                      )}
-                      {todo.Status === "DOING" && (
-                        <Button
-                          p={2}
-                          width={100}
-                          fontSize={4}
-                          bgColor="green.200"
-                          rounded="full"
-                          textAlign="center"
-                          onClick={() => onClickStatus(todo.Id, todo.Status)}
+                          {todo.Task}
+                        </Link>
+                      </Td>
+                      <Td width="12%" p={1}>
+                        {todo.Status === "NOT STARTED" && (
+                          <Button
+                            p={2}
+                            width={100}
+                            fontSize={4}
+                            bgColor="green.50"
+                            rounded="full"
+                            textAlign="center"
+                            onClick={() => onClickStatus(todo.Id, todo.Status)}
+                          >
+                            {todo.Status}
+                          </Button>
+                        )}
+                        {todo.Status === "DOING" && (
+                          <Button
+                            p={2}
+                            width={100}
+                            fontSize={4}
+                            bgColor="green.200"
+                            rounded="full"
+                            textAlign="center"
+                            onClick={() => onClickStatus(todo.Id, todo.Status)}
+                          >
+                            {todo.Status}
+                          </Button>
+                        )}
+                        {todo.Status === "DONE" && (
+                          <Button
+                            p={2}
+                            width={100}
+                            fontSize={4}
+                            bgColor="green.500"
+                            rounded="full"
+                            textAlign="center"
+                            onClick={() => onClickStatus(todo.Id, todo.Status)}
+                          >
+                            {todo.Status}
+                          </Button>
+                        )}
+                      </Td>
+                      <Td width="12%" p={1}>
+                        <Select
+                          size="sm"
+                          value={todo.Priority}
+                          onChange={(e) => onChangeSubTodoPriority(todo.Id, e)}
                         >
-                          {todo.Status}
-                        </Button>
-                      )}
-                      {todo.Status === "DONE" && (
-                        <Button
-                          p={2}
-                          width={100}
-                          fontSize={4}
-                          bgColor="green.500"
-                          rounded="full"
-                          textAlign="center"
-                          onClick={() => onClickStatus(todo.Id, todo.Status)}
-                        >
-                          {todo.Status}
-                        </Button>
-                      )}
-                    </Td>
-                    <Td width="12%" p={1}>
-                      <Select
-                        size="sm"
-                        value={todo.Priority}
-                        onChange={(e) => onChangeSubTodoPriority(todo.Id, e)}
-                      >
-                        <option value="High">High</option>
-                        <option value="Middle">Middle</option>
-                        <option value="Low">Low</option>
-                      </Select>
-                    </Td>
-                    <Td width="12%" p={2}>
-                      {todo.Create}
-                    </Td>
-                    <Td width="12%" p={2}>
-                      {todo.Update}
-                    </Td>
-                    <Td width="12%" p={1}>
-                      <IconButton
-                        icon={<EditIcon />}
-                        size="xs"
-                        ml={4}
-                        onClick={() => {
-                          linkToEdit(todo.Id);
-                        }}
-                      />
-                      <IconButton
-                        icon={<DeleteIcon />}
-                        size="xs"
-                        ml={4}
-                        onClick={() => {
-                          DeleteTodo(todo.Id);
-                        }}
-                      />
-                    </Td>
-                  </Tr>
-                );
-              })}
-            </Tbody>
-            {/* Todoリスト */}
-
-            {/* TODO: ページネーション機能挿入予定 */}
-          </Table>
-        </TableContainer>
-        {/* Todoリスト */}
+                          <option value="High">High</option>
+                          <option value="Middle">Middle</option>
+                          <option value="Low">Low</option>
+                        </Select>
+                      </Td>
+                      <Td width="12%" p={2}>
+                        {todo.Create}
+                      </Td>
+                      <Td width="12%" p={2}>
+                        {todo.Update}
+                      </Td>
+                      <Td width="12%" p={1}>
+                        <IconButton
+                          icon={<EditIcon />}
+                          size="xs"
+                          ml={4}
+                          onClick={() => {
+                            linkToEdit(todo.Id);
+                          }}
+                        />
+                        <IconButton
+                          icon={<DeleteIcon />}
+                          size="xs"
+                          ml={4}
+                          onClick={() => {
+                            DeleteTodo(todo.Id);
+                          }}
+                        />
+                      </Td>
+                    </Tr>
+                  );
+                })}
+              </Tbody>
+              {/* Todo */}
+            </Table>
+          </TableContainer>
+          {/* Todoリスト */}
+        </Box>
+        {/* ページネーション機能 */}
+        <Box display="flex" justifyContent="center">
+          <ReactPaginate
+            pageCount={pageCount}
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={1}
+            marginPagesDisplayed={1}
+            previousLabel="<"
+            nextLabel=">"
+            pageLinkClassName="page-item"
+            previousLinkClassName="page-item-nextAndPrevious"
+            nextLinkClassName="page-item-nextAndPrevious"
+            breakLabel="..."
+            breakLinkClassName="page-item-disablebutton"
+            containerClassName="pagination"
+            activeLinkClassName="active"
+          />
+        </Box>
+        {/* ページネーション機能 */}
       </Box>
       {/* 中身 */}
     </>

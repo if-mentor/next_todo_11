@@ -1,0 +1,38 @@
+.pagination {
+  list-style: none;
+  display: flex;
+  margin: 20px;
+}
+
+.page-item {
+  padding: 8px 16px 8px 16px;
+  margin: 4px;
+  font-weight: bold;
+  border: solid 1px darkgrey;
+  border-radius: 8px;
+}
+
+.page-item:hover {
+  background-color: #90ee90;
+}
+
+.page-item-nextAndPrevious {
+  padding: 8px 16px 8px 16px;
+  margin: 4px;
+  font-weight: bold;
+  border: solid 1px darkgrey;
+  border-radius: 8px;
+  color: darkgrey;
+}
+
+.active {
+  background-color: #66cdaa;
+}
+
+.page-item-disablebutton {
+  pointer-events: none;
+  padding: 8px 16px 8px 16px;
+  margin: 4px;
+  font-weight: bold;
+  border-radius: 8px;
+}
