@@ -23,12 +23,14 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import {
+  Timestamp,
   collection,
   deleteDoc,
   doc,
   getDocs,
   orderBy,
   query,
+  updateDoc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import db from "../../firebase";
@@ -42,11 +44,11 @@ const Top = () => {
   const router = useRouter();
 
   //firebaseからデータを取得する
-  useEffect(() => {
+  const todoDataFromFirebase = async () => {
     const todoData = collection(db, "posts");
     //Updateを基準に降順で取得
     const q = query(todoData, orderBy("Update", "desc"));
-    getDocs(q).then((snapShot) => {
+    await getDocs(q).then((snapShot) => {
       const getTodoData = snapShot.docs.map((doc) => {
         const { Create, Detail, Id, Pruority, Status, Task, Update } =
           doc.data();
@@ -63,6 +65,10 @@ const Top = () => {
       setTodos(getTodoData);
       // console.log(todos)
     });
+  };
+
+  useEffect(() => {
+    todoDataFromFirebase();
   }, []);
 
   //Createページに遷移する関数
@@ -76,12 +82,55 @@ const Top = () => {
   };
 
   //Deleteボタン押下時に動く関数
-  const DeleteTodo = (Id) => {
+  const DeleteTodo = async (Id) => {
     //firebaseの中のデータを削除する（バック側）
-    deleteDoc(doc(db, "posts", Id));
+    await deleteDoc(doc(db, "posts", Id));
     //表示するための処理（フロント側）
-    const deleteTodo = todos.filter((todo) => todo.Id !== Id);
-    setTodos(deleteTodo);
+    todoDataFromFirebase();
+  };
+
+  //Priority選択時に動く関数
+  const onChangeSubTodoPriority = async (Id, e) => {
+    //該当するidのデータのPriorityとUpdateを更新する（バック側）
+    await updateDoc(doc(db, "posts", Id), {
+      Priority: e.target.value,
+      Update: Timestamp.now(),
+    });
+    //表示するための処理（フロント側）
+    todoDataFromFirebase();
+  };
+  //Statusボタンを押下時にStatusが変更される
+  const onClickStatus = async (Id, Status) => {
+    //Statusの内容を変更する
+    switch (Status) {
+      case "NOT STARTED": //NOT STARTED → DOING
+        //変更したStatusの内容をFirebaseに更新する
+        await updateDoc(doc(db, "posts", Id), {
+          Status: "DOING",
+          Update: Timestamp.now(),
+        });
+        //表示するための処理（フロント側）
+        todoDataFromFirebase();
+        break;
+      case "DOING": //DOING → DONE
+        //変更したStatusの内容をFirebaseに更新する
+        await updateDoc(doc(db, "posts", Id), {
+          Status: "DONE",
+          Update: Timestamp.now(),
+        });
+        //表示するための処理（フロント側）
+        todoDataFromFirebase();
+        break;
+      case "DONE": //DONE → NOT STARTED
+        //変更したStatusの内容をFirebaseに更新する
+        await updateDoc(doc(db, "posts", Id), {
+          Status: "NOT STARTED",
+          Update: Timestamp.now(),
+        });
+        //表示するための処理（フロント側）
+        todoDataFromFirebase();
+        break;
+    }
   };
 
   return (
@@ -181,20 +230,55 @@ const Top = () => {
                       </Link>
                     </Td>
                     <Td width="12%" p={1}>
-                      <Button
-                        p={2}
-                        bgColor="green.100"
-                        rounded="full"
-                        textAlign="center"
-                      >
-                        DOING
-                      </Button>
+                      {todo.Status === "NOT STARTED" && (
+                        <Button
+                          p={2}
+                          width={100}
+                          fontSize={4}
+                          bgColor="green.50"
+                          rounded="full"
+                          textAlign="center"
+                          onClick={() => onClickStatus(todo.Id, todo.Status)}
+                        >
+                          {todo.Status}
+                        </Button>
+                      )}
+                      {todo.Status === "DOING" && (
+                        <Button
+                          p={2}
+                          width={100}
+                          fontSize={4}
+                          bgColor="green.200"
+                          rounded="full"
+                          textAlign="center"
+                          onClick={() => onClickStatus(todo.Id, todo.Status)}
+                        >
+                          {todo.Status}
+                        </Button>
+                      )}
+                      {todo.Status === "DONE" && (
+                        <Button
+                          p={2}
+                          width={100}
+                          fontSize={4}
+                          bgColor="green.500"
+                          rounded="full"
+                          textAlign="center"
+                          onClick={() => onClickStatus(todo.Id, todo.Status)}
+                        >
+                          {todo.Status}
+                        </Button>
+                      )}
                     </Td>
                     <Td width="12%" p={1}>
-                      <Select size="sm">
-                        <option value="High">high</option>
-                        <option value="Middle">middle</option>
-                        <option value="Low">low</option>
+                      <Select
+                        size="sm"
+                        value={todo.Priority}
+                        onChange={(e) => onChangeSubTodoPriority(todo.Id, e)}
+                      >
+                        <option value="High">High</option>
+                        <option value="Middle">Middle</option>
+                        <option value="Low">Low</option>
                       </Select>
                     </Td>
                     <Td width="12%" p={2}>
