@@ -52,22 +52,6 @@ const Top = () => {
   //画面遷移用
   const router = useRouter();
 
-  //Top画面に表示するTodoリストの数
-  const itemsPerPage = 6;
-  //ページ数の状態
-  const [itemsOffset, setItemsOffset] = useState(0);
-  //ページ内の最後にあるTodoが何番目になるか
-  const endOffset = itemsOffset + itemsPerPage;
-
-  const currentAlbums = filteredTodos.slice(itemsOffset, endOffset);
-  const pageCount = Math.ceil(filteredTodos.length / itemsPerPage);
-
-  //ページネーションのための関数
-  const handlePageClick = (e) => {
-    const newOffset = (e.selected * itemsPerPage) % filteredTodos.length;
-    setItemsOffset(newOffset);
-  };
-
   //firebaseからデータを取得する
   const todoDataFromFirebase = async () => {
     const todoData = collection(db, "posts");
@@ -184,6 +168,22 @@ const Top = () => {
   const handleReset = () => {
     setSelectedPriority(initialPriority);
     setSelectedStatus(initialStatus);
+  };
+
+  //Top画面に表示するTodoリストの数
+  const itemsPerPage = 6;
+  //ページ数の状態
+  const [itemsOffset, setItemsOffset] = useState(0);
+  //ページ内の最後にあるTodoが何番目になるか
+  const endOffset = itemsOffset + itemsPerPage;
+
+  const currentAlbums = filteredTodos.slice(itemsOffset, endOffset);
+  const pageCount = Math.ceil(filteredTodos.length / itemsPerPage);
+
+  //ページネーションのための関数
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * itemsPerPage) % filteredTodos.length;
+    setItemsOffset(newOffset);
   };
 
   return (
@@ -352,16 +352,10 @@ const Top = () => {
                         </Select>
                       </Td>
                       <Td width="12%" p={2}>
-                        {format(
-                          new Date(todo.Create.toDate()),
-                          "yyyy-MM-dd HH:mm"
-                        )}
+                        {todo.Create}
                       </Td>
                       <Td width="12%" p={2}>
-                        {format(
-                          new Date(todo.Update.toDate()),
-                          "yyyy-MM-dd HH:mm"
-                        )}
+                        {todo.Update}
                       </Td>
                       <Td width="12%" p={1}>
                         <IconButton
