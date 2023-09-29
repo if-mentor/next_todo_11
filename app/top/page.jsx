@@ -50,13 +50,13 @@ const Top = () => {
     const q = query(todoData, orderBy("Update", "desc"));
     await getDocs(q).then((snapShot) => {
       const getTodoData = snapShot.docs.map((doc) => {
-        const { Create, Detail, Id, Pruority, Status, Task, Update } =
+        const { Create, Detail, Id, Priority, Status, Task, Update } =
           doc.data();
         return {
           Create: dateFormat(Create),
           Detail,
           Id,
-          Pruority,
+          Priority,
           Status,
           Task,
           Update: dateFormat(Update),
