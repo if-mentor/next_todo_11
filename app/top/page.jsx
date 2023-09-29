@@ -30,21 +30,28 @@ import {
   getDocs,
   orderBy,
   query,
-  serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import db from "../../firebase";
-import { format } from "date-fns";
 import Link from "next/link";
 import ReactPaginate from "react-paginate";
 import page from "./page.css";
+import { dateFormat } from "../../utils/dateFormat";
 
 const Top = () => {
   //状態
   const [todos, setTodos] = useState([]);
+  //Priority検索用
+  const [selectedPriority, setSelectedPriority] = useState("");
+  // Status検索用
+  const [selectedStatus, setSelectedStatus] = useState("");
+  // 検索用ボタンを空に設定
+  const initialPriority = "";
+  const initialStatus = "";
   //画面遷移用
   const router = useRouter();
+
   //Top画面に表示するTodoリストの数
   const itemsPerPage = 6;
   //ページ数の状態
@@ -52,28 +59,33 @@ const Top = () => {
   //ページ内の最後にあるTodoが何番目になるか
   const endOffset = itemsOffset + itemsPerPage;
 
-  const currentAlbums = todos.slice(itemsOffset, endOffset);
-  const pageCount = Math.ceil(todos.length / itemsPerPage);
+  const currentAlbums = filteredTodos.slice(itemsOffset, endOffset);
+  const pageCount = Math.ceil(filteredTodos.length / itemsPerPage);
 
   //ページネーションのための関数
   const handlePageClick = (e) => {
-    // console.log(e.selected);
-    const newOffset = (e.selected * itemsPerPage) % todos.length;
+    const newOffset = (e.selected * itemsPerPage) % filteredTodos.length;
     setItemsOffset(newOffset);
   };
 
   //firebaseからデータを取得する
-  const todoDataFromFirebase = () => {
+  const todoDataFromFirebase = async () => {
     const todoData = collection(db, "posts");
     //Updateを基準に降順で取得
     const q = query(todoData, orderBy("Update", "desc"));
-    getDocs(q).then((snapShot) => {
+    await getDocs(q).then((snapShot) => {
       const getTodoData = snapShot.docs.map((doc) => {
-        // console.log("documentData", doc.data());
-        // console.log("時間", new Date(doc.data().Create.toDate()));
         const { Create, Detail, Id, Priority, Status, Task, Update } =
           doc.data();
-        return { Create, Detail, Id, Priority, Status, Task, Update };
+        return {
+          Create: dateFormat(Create),
+          Detail,
+          Id,
+          Priority,
+          Status,
+          Task,
+          Update: dateFormat(Update),
+        };
       });
       setTodos(getTodoData);
       // console.log(todos)
@@ -96,83 +108,82 @@ const Top = () => {
   };
 
   //Deleteボタン押下時に動く関数
-  const DeleteTodo = (Id) => {
+  const DeleteTodo = async (Id) => {
     //firebaseの中のデータを削除する（バック側）
-    deleteDoc(doc(db, "posts", Id));
+    await deleteDoc(doc(db, "posts", Id));
     //表示するための処理（フロント側）
-    const deleteTodo = todos.filter((todo) => todo.Id !== Id);
-    setTodos(deleteTodo);
-  };
-
-  //Priority選択時に動く関数
-  const onChangeSubTodoPriority = (Id, e) => {
-    //該当するidのデータのPriorityとUpdateを更新する（バック側）
-    updateDoc(doc(db, "posts", Id), {
-      Priority: e.target.value,
-      Update: Timestamp.now(),
-    });
-    // console.log(Id);
-    //該当するidのデータのPriorityとUpdateを更新する(フロント側)
     todoDataFromFirebase();
   };
 
+  //Priority選択時に動く関数
+  const onChangeSubTodoPriority = async (Id, e) => {
+    //該当するidのデータのPriorityとUpdateを更新する（バック側）
+    await updateDoc(doc(db, "posts", Id), {
+      Priority: e.target.value,
+      Update: Timestamp.now(),
+    });
+    //表示するための処理（フロント側）
+    todoDataFromFirebase();
+  };
   //Statusボタンを押下時にStatusが変更される
-  const onClickStatus = (Id, Status) => {
+  const onClickStatus = async (Id, Status) => {
     //Statusの内容を変更する
-    // console.log(Status);
     switch (Status) {
-      case "NOT STARTED":
-        //NOT STARTED → DOING
+      case "NOT STARTED": //NOT STARTED → DOING
         //変更したStatusの内容をFirebaseに更新する
-        updateDoc(doc(db, "posts", Id), {
+        await updateDoc(doc(db, "posts", Id), {
           Status: "DOING",
-          Update: serverTimestamp(),
+          Update: Timestamp.now(),
         });
-        //該当するidのデータのStatusとUpdateを更新する（フロント側）
-        const updateDoingDate = format(new Date(), "yyyy-MM-dd HH:mm");
-        const changeDoingTodo = todos.map((todo) => {
-          return todo.Id === Id
-            ? { ...todo, Status: "DOING", Update: updateDoingDate }
-            : todo;
-        });
-        setTodos(changeDoingTodo);
-        // location.reload();
+        //表示するための処理（フロント側）
+        todoDataFromFirebase();
         break;
-      case "DOING":
-        //DOING → DONE
+      case "DOING": //DOING → DONE
         //変更したStatusの内容をFirebaseに更新する
-        const updateDoneDate = format(new Date(), "yyyy-MM-dd HH:mm");
-        updateDoc(doc(db, "posts", Id), {
+        await updateDoc(doc(db, "posts", Id), {
           Status: "DONE",
-          Update: serverTimestamp(),
+          Update: Timestamp.now(),
         });
-        //該当するidのデータのStatusとUpdateを更新する（フロント側）
-        const changeDoneTodo = todos.map((todo) => {
-          return todo.Id === Id
-            ? { ...todo, Status: "DONE", Update: updateDoneDate }
-            : todo;
-        });
-        setTodos(changeDoneTodo);
-        // location.reload();
+        //表示するための処理（フロント側）
+        todoDataFromFirebase();
         break;
-      case "DONE":
-        //DONE → NOT STARTED
+      case "DONE": //DONE → NOT STARTED
         //変更したStatusの内容をFirebaseに更新する
-        updateDoc(doc(db, "posts", Id), {
+        await updateDoc(doc(db, "posts", Id), {
           Status: "NOT STARTED",
-          Update: serverTimestamp(),
+          Update: Timestamp.now(),
         });
-        //該当するidのデータのStatusとUpdateを更新する（フロント側）
-        const updateNotStartedDate = format(new Date(), "yyyy-MM-dd HH:mm");
-        const changeNotStartedTodo = todos.map((todo) => {
-          return todo.Id === Id
-            ? { ...todo, Status: "NOT STARTED", Update: updateNotStartedDate }
-            : todo;
-        });
-        setTodos(changeNotStartedTodo);
-        // location.reload();
+        //表示するための処理（フロント側）
+        todoDataFromFirebase();
         break;
     }
+  };
+
+  // 優先度に基づいてデータをフィルタリング
+  // 状態と優先度の両方に基づいてデータをフィルタリング
+  const filteredTodos = todos.filter((todo) => {
+    switch (true) {
+      // どちらも選択されていない場合、すべてのタスクを表示
+      case selectedStatus === "" && selectedPriority === "":
+        return true;
+      // 状態が選択されておらず、優先度が選択されている場合
+      case selectedStatus === "" && selectedPriority !== "":
+        return todo.Priority === selectedPriority;
+      // 状態が選択されており、優先度が選択されていない場合
+      case selectedStatus !== "" && selectedPriority === "":
+        return todo.Status === selectedStatus;
+      // 両方が選択されている場合
+      default:
+        return (
+          todo.Status === selectedStatus && todo.Priority === selectedPriority
+        );
+    }
+  });
+
+  //Resetボタン押下時に初期値にリセット
+  const handleReset = () => {
+    setSelectedPriority(initialPriority);
+    setSelectedStatus(initialStatus);
   };
 
   return (
@@ -197,9 +208,15 @@ const Top = () => {
             {/* STATUS部分 */}
             <FormControl>
               <FormLabel>STATUS</FormLabel>
-              <Select placeholder="状態を選択" size="sm">
-                <option>未完了</option>
-                <option>完了</option>
+              <Select
+                placeholder="---------"
+                size="sm"
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+              >
+                <option value="NOT STARTED">NOT STARTED</option>
+                <option value="DOING">DOING</option>
+                <option value="DONE">DONE</option>
               </Select>
             </FormControl>
             {/* STATUS部分 */}
@@ -207,17 +224,27 @@ const Top = () => {
             {/* PRIORITY部分 */}
             <FormControl>
               <FormLabel>PRIORITY</FormLabel>
-              <Select placeholder="重要度を選択" size="sm">
-                <option>高</option>
-                <option>中</option>
-                <option>低</option>
+              <Select
+                placeholder="---------"
+                size="sm"
+                value={selectedPriority}
+                onChange={(e) => setSelectedPriority(e.target.value)}
+              >
+                <option value="High">High</option>
+                <option value="Middle">Middle</option>
+                <option value="Low">Low</option>
               </Select>
             </FormControl>
             {/* PRIORITY部分 */}
 
             {/* RESETボタン */}
             <Box>
-              <Button variant="outline" colorScheme="gray" rounded="full">
+              <Button
+                variant="outline"
+                colorScheme="gray"
+                rounded="full"
+                onClick={handleReset}
+              >
                 RESET
               </Button>
             </Box>
